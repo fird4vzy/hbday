@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Сделать открытку</title>
+<meta name="description" content="Конструктор поздравительной открытки: имя, возраст, пожелания, фото и музыка.">
+<meta name="theme-color" content="#17171d">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>🎉</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Playfair+Display:ital,wght@0,700;1,600&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<main class="builder">
+  <h1>Своя открытка</h1>
+  <p class="lead">
+    Заполни поля — получится ссылка, которую можно отправить в WhatsApp или Telegram.
+    Вся открытка зашита в саму ссылку: сервер и база данных не нужны, никто ничего не хранит.
+  </p>
+
+  <form id="form" autocomplete="off">
+    <div class="row-2">
+      <div class="field">
+        <label for="to">Кому</label>
+        <input id="to" placeholder="Например: Чарос">
+      </div>
+      <div class="field">
+        <label for="from">От кого</label>
+        <input id="from" placeholder="Например: Фирдавс">
+      </div>
+    </div>
+
+    <div class="row-2">
+      <div class="field">
+        <label for="age">Сколько лет</label>
+        <input id="age" type="number" min="1" max="130" placeholder="23">
+      </div>
+      <div class="field">
+        <label for="date">Дата</label>
+        <input id="date" placeholder="18 августа">
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="signoff">Подпись перед именем</label>
+      <input id="signoff" placeholder="С теплом,">
+    </div>
+
+    <div class="field">
+      <label for="letterTitle">Заголовок письма</label>
+      <input id="letterTitle" placeholder="С днём рождения!">
+      <p class="hint">Печатается по буквам на слайде с тортом.</p>
+    </div>
+
+    <div class="field">
+      <label for="letterIntro">Вступление письма</label>
+      <textarea id="letterIntro" style="min-height:80px"></textarea>
+    </div>
+
+    <div class="field">
+      <label for="wishes">Пожелания</label>
+      <textarea id="wishes" style="min-height:220px"></textarea>
+      <p class="hint">По одному пожеланию в строке — они появятся пронумерованным списком.</p>
+    </div>
+
+    <div class="field">
+      <label for="letterClosing">Концовка письма</label>
+      <textarea id="letterClosing" style="min-height:80px"></textarea>
+    </div>
+
+    <div class="row-2">
+      <div class="field">
+        <label for="finaleTitle">Последний слайд: заголовок</label>
+        <input id="finaleTitle">
+      </div>
+      <div class="field">
+        <label for="finaleText">Последний слайд: текст</label>
+        <input id="finaleText">
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="photoUrls">Фотографии по ссылкам</label>
+      <textarea id="photoUrls" style="min-height:90px"
+                placeholder="https://…/photo1.jpg&#10;https://…/photo2.jpg"></textarea>
+      <p class="hint">По одной ссылке в строке. Есть фото — появится отдельный слайд.</p>
+    </div>
+
+    <div class="field">
+      <label for="photoFiles">Или прикрепить фото с устройства</label>
+      <input id="photoFiles" type="file" accept="image/*" multiple>
+      <p class="hint" id="photoStatus">
+        Фото сжимаются и вшиваются прямо в ссылку. Больше 2–3 снимков — и ссылка станет очень длинной.
+      </p>
+    </div>
+
+    <div class="field">
+      <label for="music">Музыка</label>
+      <input id="music" placeholder="Ссылка на YouTube, Spotify или .mp3">
+      <p class="hint">Включится, как только получатель откроет подарок.</p>
+    </div>
+
+    <div class="field">
+      <label for="theme">Тема</label>
+      <select id="theme"></select>
+    </div>
+
+    <div class="btn-row">
+      <button type="submit" class="btn">Создать ссылку</button>
+      <button type="button" class="ghost-btn" id="previewBtn">Предпросмотр</button>
+    </div>
+  </form>
+
+  <div class="result" id="result">
+    <div class="field" style="margin-top:24px">
+      <label for="resultLink">Ссылка на открытку</label>
+      <textarea class="result-link" id="resultLink" rows="4" readonly></textarea>
+    </div>
+    <div class="btn-row">
+      <button type="button" class="btn" id="copyBtn">Скопировать</button>
+      <a class="ghost-btn" id="openBtn" target="_blank" rel="noopener">Открыть открытку</a>
+      <a class="ghost-btn" id="waBtn" target="_blank" rel="noopener">Отправить в WhatsApp</a>
+    </div>
+    <p class="hint" id="sizeHint" style="margin-top:14px;color:rgba(246,244,248,.6);font-size:12.5px"></p>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script src="assets/js/shared.js"></script>
+<script src="assets/js/create.js"></script>
+</body>
+</html>

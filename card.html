@@ -1,0 +1,734 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Открытка Чарос</title>
+<meta name="description" content="Поздравительная открытка с подарком, тортом и списком пожеланий.">
+<meta name="theme-color" content="#17171d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Playfair+Display:ital,wght@0,700;1,600&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============ токены ============ */
+:root {
+  --bg: #17171d;
+  --accent: #ff2e7e;
+  --warm: #ffb347;
+  --glow: #7b2ff7;
+  --text: #f6f4f8;
+  --muted: rgba(246, 244, 248, 0.6);
+  --line: rgba(255, 255, 255, 0.12);
+  --panel: rgba(255, 255, 255, 0.05);
+  --script: 'Caveat', 'Segoe Script', cursive;
+  --display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --sans: 'Manrope', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --shadow: 0 22px 60px rgba(0, 0, 0, 0.5);
+}
+
+* { box-sizing: border-box; }
+
+/* Собственные display у кнопок и слайдов перебивают правило браузера для [hidden]. */
+[hidden] { display: none !important; }
+
+html, body { margin: 0; padding: 0; height: 100%; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* тёплые пятна света по углам */
+body::before {
+  content: '';
+  position: fixed;
+  inset: -25vmax;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(34vmax 34vmax at 18% 22%, color-mix(in srgb, var(--glow) 34%, transparent), transparent 70%),
+    radial-gradient(40vmax 40vmax at 84% 76%, color-mix(in srgb, var(--accent) 26%, transparent), transparent 72%),
+    radial-gradient(30vmax 30vmax at 70% 12%, color-mix(in srgb, var(--warm) 16%, transparent), transparent 70%);
+  filter: blur(24px);
+  animation: drift 26s ease-in-out infinite alternate;
+}
+
+@keyframes drift {
+  from { transform: translate3d(-2%, -1%, 0) scale(1); }
+  to   { transform: translate3d(3%, 2%, 0) scale(1.08); }
+}
+
+#confetti, #fireworks {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* ============ общие элементы ============ */
+.screen {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 84px 20px 48px;
+  text-align: center;
+}
+
+
+.eyebrow {
+  margin: 0;
+  font-size: clamp(11px, 3vw, 13px);
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+}
+.eyebrow.gold { color: var(--warm); }
+.eyebrow.pink { color: var(--accent); }
+.eyebrow.dim  { color: var(--muted); letter-spacing: 0.4em; }
+
+.gradient-text {
+  background: linear-gradient(100deg, var(--accent), var(--warm) 45%, var(--accent) 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.display-name {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(56px, 15vw, 128px);
+  line-height: 1;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.script-name {
+  font-family: var(--script);
+  font-weight: 700;
+  font-size: clamp(58px, 17vw, 132px);
+  line-height: 1.05;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.script-line {
+  font-family: var(--script);
+  font-size: clamp(34px, 9vw, 60px);
+  margin: 0;
+  color: var(--text);
+}
+
+.hint {
+  margin: 0;
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 15px 30px;
+  border: 0;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 700;
+  font-size: 16px;
+  color: #fff;
+  cursor: pointer;
+  background: linear-gradient(100deg, var(--accent), var(--warm));
+  box-shadow: 0 14px 34px color-mix(in srgb, var(--accent) 38%, transparent);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 18px 40px color-mix(in srgb, var(--accent) 46%, transparent); }
+.btn:active { transform: translateY(0); }
+
+.ghost-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 20px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.ghost-btn:hover { background: rgba(255, 255, 255, 0.11); }
+
+:where(button, a, [tabindex]):focus-visible {
+  outline: 2px solid var(--warm);
+  outline-offset: 3px;
+}
+
+.back-btn {
+  position: fixed;
+  left: 16px;
+  top: 16px;
+  z-index: 30;
+}
+
+/* ============ 1. подарочная коробка ============ */
+.giftbox {
+  position: relative;
+  width: min(400px, 78vw);
+  aspect-ratio: 4 / 3;
+  border-radius: 10px;
+  cursor: pointer;
+  background:
+    radial-gradient(120% 120% at 20% 10%, rgba(255, 255, 255, 0.07), transparent 60%),
+    linear-gradient(150deg, color-mix(in srgb, var(--accent) 26%, #17131a), color-mix(in srgb, var(--warm) 22%, #171317));
+  box-shadow: var(--shadow), 0 0 90px color-mix(in srgb, var(--accent) 22%, transparent);
+  animation: float 3.4s ease-in-out infinite;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* мелкий точечный узор «упаковочной бумаги» */
+.giftbox::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.16) 1px, transparent 1.4px);
+  background-size: 26px 26px;
+  opacity: 0.5;
+}
+
+.ribbon-v, .ribbon-h {
+  position: absolute;
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--accent) 70%, #000),
+    var(--accent) 45%, #ff9dc4 50%, var(--accent) 55%,
+    color-mix(in srgb, var(--accent) 70%, #000));
+  box-shadow: 0 0 26px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+.ribbon-v { left: 50%; top: 0; bottom: 0; width: 17%; translate: -50% 0; }
+.ribbon-h {
+  left: 0; right: 0; top: 50%; height: 22%; translate: 0 -50%;
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--accent) 70%, #000),
+    var(--accent) 45%, #ff9dc4 50%, var(--accent) 55%,
+    color-mix(in srgb, var(--accent) 70%, #000));
+}
+
+.bow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  width: 54%;
+  z-index: 3;
+  overflow: visible;
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.45));
+}
+.bow-loop { fill: url(#bowFill); }
+.bow-tail { fill: color-mix(in srgb, var(--accent) 82%, #000); }
+.bow-knot { fill: url(#bowFill); }
+
+.giftbox:hover { transform: scale(1.02); }
+.giftbox.is-opening { animation: none; transform: scale(1.5); opacity: 0; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-12px); }
+}
+
+.make-link {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 14px;
+  margin: 0;
+  font-size: 12px;
+}
+.make-link a { color: rgba(246, 244, 248, 0.34); }
+
+/* ============ 2. заставка ============ */
+.screen-intro .display-name { margin: 6px 0 4px; }
+
+/* ============ 3. слайды ============ */
+.screen-deck { justify-content: flex-start; padding-top: 76px; }
+
+.dots {
+  position: fixed;
+  left: 50%;
+  top: 22px;
+  translate: -50% 0;
+  z-index: 30;
+  display: flex;
+  gap: 12px;
+}
+.dots button {
+  width: 13px;
+  height: 13px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+.dots button.is-active {
+  background: color-mix(in srgb, var(--accent) 60%, #fff);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.slides {
+  width: 100%;
+  max-width: 700px;
+  margin: auto;
+  display: grid;
+}
+
+.slide {
+  grid-area: 1 / 1;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(18px);
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s;
+}
+.slide.is-active { opacity: 1; visibility: visible; transform: none; }
+
+.nav-btn {
+  position: fixed;
+  top: 50%;
+  translate: 0 -50%;
+  z-index: 30;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.nav-btn[data-dir="prev"] { left: 18px; }
+.nav-btn[data-dir="next"] { right: 18px; }
+.nav-btn:disabled { opacity: 0.25; cursor: default; }
+
+/* — слайд 1: открытка — */
+.card-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(6px, 3vw, 26px);
+}
+.card-name-row .party { font-size: clamp(30px, 8vw, 58px); }
+.card-name-row .party.right { scale: -1 1; }
+
+.card-glow {
+  position: absolute;
+  left: 50%;
+  top: 26%;
+  translate: -50% -50%;
+  width: min(560px, 88vw);
+  aspect-ratio: 2 / 1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--warm) 26%, transparent), transparent);
+  filter: blur(10px);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.card-age {
+  font-size: clamp(22px, 5.5vw, 30px);
+  font-weight: 700;
+  margin: 10px 0 0;
+}
+.card-date { margin: 14px 0 0; color: var(--muted); font-size: 16px; }
+.card-signoff { margin: 18px 0 0; color: var(--muted); font-size: 16px; }
+.card-actions { margin-top: 30px; }
+
+/* — слайд 2: письмо с пожеланиями — */
+.cake {
+  font-size: clamp(64px, 16vw, 96px);
+  line-height: 1;
+  filter: drop-shadow(0 0 26px color-mix(in srgb, var(--warm) 45%, transparent));
+  animation: float 4s ease-in-out infinite;
+}
+
+.letter-title {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: clamp(28px, 7vw, 46px);
+  margin: 22px 0 0;
+  min-height: 1.2em;
+}
+.caret {
+  display: inline-block;
+  width: 3px;
+  height: 0.9em;
+  translate: 0 0.1em;
+  background: var(--accent);
+  animation: blink 1s steps(2) infinite;
+}
+.caret.is-done { display: none; }
+@keyframes blink { 50% { opacity: 0; } }
+
+.letter-body {
+  margin: 26px auto 0;
+  max-width: 620px;
+  text-align: left;
+  padding: clamp(20px, 5vw, 30px);
+  border-radius: 22px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: var(--shadow);
+}
+
+.letter-intro { margin: 0 0 20px; font-size: 17px; line-height: 1.65; color: var(--muted); }
+
+.wishes { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 14px; }
+
+.wishes li {
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  gap: 12px;
+  align-items: start;
+  font-size: 17px;
+  line-height: 1.6;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.wishes li.is-shown { opacity: 1; transform: none; }
+
+.wishes li::before {
+  content: counter(wish);
+  counter-increment: wish;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--bg);
+  background: linear-gradient(140deg, var(--warm), var(--accent));
+}
+.wishes { counter-reset: wish; }
+
+.letter-closing {
+  margin: 24px 0 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  font-size: 17px;
+  line-height: 1.65;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.letter-closing.is-shown { opacity: 1; }
+
+.letter-sign {
+  margin: 14px 0 0;
+  text-align: right;
+  font-family: var(--script);
+  font-size: 30px;
+  color: var(--accent);
+}
+
+.skip-hint {
+  margin: 16px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* — слайд с фотографиями — */
+.photo-frame {
+  position: relative;
+  margin: 20px auto 0;
+  max-width: 460px;
+  aspect-ratio: 4 / 5;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.35);
+}
+.photo-frame img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.9s ease;
+}
+.photo-frame img.is-active { opacity: 1; }
+
+.photo-dots { display: flex; justify-content: center; gap: 8px; margin-top: 14px; }
+.photo-dots button {
+  width: 7px; height: 7px; padding: 0; border: 0; border-radius: 50%;
+  background: var(--line); cursor: pointer; transition: background 0.3s, width 0.3s;
+}
+.photo-dots button.is-active { background: var(--accent); width: 20px; border-radius: 4px; }
+
+/* — финальный слайд — */
+.finale-emoji { font-size: clamp(64px, 16vw, 96px); animation: float 4s ease-in-out infinite; }
+.finale-title { font-family: var(--display); font-size: clamp(30px, 7vw, 48px); margin: 20px 0 0; }
+.finale-text { margin: 14px 0 30px; font-size: 17px; line-height: 1.6; color: var(--muted); }
+
+/* ============ музыка ============ */
+.music-toggle {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 30;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--text);
+  font-size: 20px;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  display: none;
+  place-items: center;
+}
+.music-toggle.is-on { display: grid; }
+.music-toggle.is-playing { animation: spin 6s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.music-frame { position: fixed; left: -9999px; width: 320px; height: 90px; border: 0; }
+.music-frame.is-visible {
+  left: auto; right: 18px; bottom: 82px; z-index: 30;
+  border-radius: 14px; box-shadow: var(--shadow);
+}
+
+/* ============ конструктор ============ */
+.builder {
+  position: relative;
+  z-index: 2;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 48px 20px 80px;
+}
+
+.builder h1 { font-family: var(--display); font-size: clamp(34px, 8vw, 52px); margin: 0 0 8px; }
+.builder .lead { color: var(--muted); margin: 0 0 32px; line-height: 1.6; }
+
+.field { margin-bottom: 20px; }
+.field label {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.field input, .field textarea, .field select {
+  width: 100%;
+  padding: 13px 15px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  font: inherit;
+  font-size: 15px;
+}
+.field textarea { min-height: 150px; resize: vertical; line-height: 1.6; }
+.field input:focus, .field textarea:focus, .field select:focus {
+  outline: 2px solid color-mix(in srgb, var(--accent) 70%, transparent);
+  outline-offset: 1px;
+}
+.field .hint { margin-top: 7px; font-size: 12.5px; color: var(--muted); line-height: 1.5; text-transform: none; letter-spacing: 0; }
+.field select option { background: #14121a; color: #fff; }
+.row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+.btn-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+
+.result { margin-top: 28px; display: none; }
+.result.is-visible { display: block; }
+
+.result-link {
+  width: 100%;
+  padding: 13px 15px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  word-break: break-all;
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 26px;
+  translate: -50% 0;
+  z-index: 60;
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.82);
+  border: 1px solid var(--line);
+  font-size: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s, translate 0.3s;
+}
+.toast.is-visible { opacity: 1; translate: -50% -8px; }
+
+@media (max-width: 560px) {
+  /* На узком экране стрелки по бокам легли бы поверх текста — уводим их вниз слева. */
+  .nav-btn { width: 46px; height: 46px; top: auto; translate: none; bottom: 16px; }
+  .nav-btn[data-dir="prev"] { left: 16px; }
+  .nav-btn[data-dir="next"] { left: 72px; right: auto; }
+  .screen-deck { padding-bottom: 84px; }
+  .row-2 { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+/* Общие данные и утилиты открытки. */
+
+const DEFAULT_CARD = {
+  to: 'Чарос',
+  from: 'Фирдавс',
+  age: 23,
+  date: '18 августа',
+  signoff: 'С теплом,',
+  letterTitle: 'С днём рождения!',
+  letterIntro: 'Сел писать — и понял, что пожелать хочется много всего. Вот список, читай до конца 😄',
+  wishes: [
+    'Ну базовое и главное — будь всегда здоровой.',
+    'Потом можно сказать — будь богатой, да, деньги, кто же не любит 😅',
+    'Мечты и желания: надеюсь, всё, о чём ты думала, мечтала или планировала, сбудется легко и без лишнего.',
+    'Чтобы у тебя не было стрессовых ситуаций, потому что этот **** стресс 🤣 плохая штука, всем болезням вина!',
+    'Желаю, чтобы на вопрос «какой твой любимый день?» ты отвечала — «Каждый» :)',
+    'Желаю, чтобы никто никогда не разбивал твоё сердце.',
+    'Желаю, чтобы, когда ты чистишь мандарины, кожура снималась легко и быстро (меня это бесит).',
+    'Желаю, чтобы ты никогда не чувствовала одиночества.',
+    'Желаю, чтобы твой внутренний огонёк никогда не потух.',
+    'Ну и у нас желают много лет жизни — хотя я не знаю зачем, ахахахаха. Ладно, шучу.'
+  ],
+  letterClosing: 'Желаю вообще всего того, что вспомнил. Надеюсь, прочитаешь все пункты — я пишу это уже минут 20 🤣',
+  finaleTitle: 'Ещё раз — с днём рождения!',
+  finaleText: 'Пусть этот год будет твоим лучшим.',
+  photos: [],
+  music: '',
+  theme: 'party'
+};
+
+const THEMES = {
+  party:  { label: 'Праздник', bg: '#17171d', accent: '#ff2e7e', warm: '#ffb347', glow: '#7b2ff7' },
+  gold:   { label: 'Золото',   bg: '#16130d', accent: '#ffc233', warm: '#ff8a3d', glow: '#b06f00' },
+  neon:   { label: 'Неон',     bg: '#0c1018', accent: '#22d3ee', warm: '#a78bfa', glow: '#2563eb' },
+  mint:   { label: 'Мята',     bg: '#0b1512', accent: '#4ade80', warm: '#facc15', glow: '#0d9488' },
+  candy:  { label: 'Карамель', bg: '#1a1016', accent: '#fb7185', warm: '#fcd34d', glow: '#c026d3' }
+};
+
+const CONFETTI_COLORS = ['#ff2e7e', '#ffb347', '#7b2ff7', '#22d3ee', '#4ade80', '#f8fafc'];
+
+/* base64url <-> UTF-8, чтобы открытка целиком помещалась в ссылку. */
+function encodeCard(data) {
+  const bytes = new TextEncoder().encode(JSON.stringify(data));
+  let bin = '';
+  bytes.forEach((b) => { bin += String.fromCharCode(b); });
+  return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+function decodeCard(str) {
+  const b64 = str.replace(/-/g, '+').replace(/_/g, '/');
+  const bin = atob(b64 + '='.repeat((4 - (b64.length % 4)) % 4));
+  return JSON.parse(new TextDecoder().decode(Uint8Array.from(bin, (c) => c.charCodeAt(0))));
+}
+
+/* Открытка живёт в хэше: index.html#<base64url>.
+   В однофайловой сборке перед данными стоит маркер "make:" — его снимаем. */
+function readCardFromLocation() {
+  let raw = location.hash.replace(/^#/, '');
+  if (raw === 'make') raw = '';
+  else if (raw.startsWith('make:')) raw = raw.slice(5);
+  if (!raw) return null;
+  try {
+    return Object.assign({}, DEFAULT_CARD, decodeCard(raw));
+  } catch (e) {
+    console.warn('Не удалось разобрать ссылку открытки:', e);
+    return null;
+  }
+}
+
+function applyTheme(card) {
+  const theme = THEMES[card.theme] || THEMES.party;
+  const root = document.documentElement;
+  root.style.setProperty('--bg', theme.bg);
+  root.style.setProperty('--accent', theme.accent);
+  root.style.setProperty('--warm', theme.warm);
+  root.style.setProperty('--glow', theme.glow);
+}
+
+/* Ссылка на музыку -> embed. Поддержаны YouTube, Spotify и прямые mp3. */
+function musicSource(url) {
+  if (!url) return null;
+  const u = url.trim();
+  let m = u.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]{11})/);
+  if (m) {
+    const t = (u.match(/[?&]t=(\d+)/) || [])[1];
+    return {
+      kind: 'iframe',
+      src: `https://www.youtube.com/embed/${m[1]}?autoplay=1&loop=1&playlist=${m[1]}` + (t ? `&start=${t}` : '')
+    };
+  }
+  m = u.match(/spotify\.com\/(?:intl-\w+\/)?(track|album|playlist)\/([\w]+)/);
+  if (m) return { kind: 'iframe', src: `https://open.spotify.com/embed/${m[1]}/${m[2]}?autoplay=1` };
+  if (/\.(mp3|ogg|wav|m4a)(\?.*)?$/i.test(u)) return { kind: 'audio', src: u };
+  return { kind: 'iframe', src: u };
+}
+
+/* Адрес страницы открытки: рядом лежащий index.html либо этот же файл в однофайловой сборке. */
+function cardBaseUrl() {
+  const url = location.href.split('#')[0];
+  return url.endsWith('create.html') ? url.replace(/create\.html$/, 'index.html') : url;
+}
+
+
+const VIEWS = {"card": "<canvas id=\"confetti\"></canvas>\n\n<button class=\"ghost-btn back-btn\" id=\"backBtn\" hidden>← В начало</button>\n\n<!-- 1. Подарок. Первый тап нужен и для драматургии, и чтобы браузер разрешил звук -->\n<section class=\"screen screen-gift\" id=\"screenGift\">\n  <div class=\"giftbox\" id=\"giftbox\" role=\"button\" tabindex=\"0\" aria-label=\"Открыть подарок\">\n    <div class=\"ribbon-v\"></div>\n    <div class=\"ribbon-h\"></div>\n    <svg class=\"bow\" viewBox=\"0 0 200 112\" aria-hidden=\"true\">\n      <defs>\n        <linearGradient id=\"bowFill\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n          <stop offset=\"0%\" stop-color=\"#ff9dc4\"/>\n          <stop offset=\"100%\" stop-color=\"var(--accent)\"/>\n        </linearGradient>\n      </defs>\n      <path class=\"bow-tail\" d=\"M95 54 L70 108 L90 98 L100 62 Z\"/>\n      <path class=\"bow-tail\" d=\"M105 54 L130 108 L110 98 L100 62 Z\"/>\n      <path class=\"bow-loop\" d=\"M100 50 C66 8, 26 14, 20 40 C14 66, 60 76, 100 54 Z\"/>\n      <path class=\"bow-loop\" d=\"M100 50 C134 8, 174 14, 180 40 C186 66, 140 76, 100 54 Z\"/>\n      <rect class=\"bow-knot\" x=\"88\" y=\"40\" width=\"24\" height=\"22\" rx=\"6\"/>\n    </svg>\n  </div>\n  <p class=\"eyebrow dim\">для</p>\n  <h1 class=\"script-name gradient-text\" id=\"giftTo\">Чарос</h1>\n  <p class=\"hint\">нажми, чтобы открыть</p>\n  <p class=\"make-link\"><a href=\"#make\" id=\"makeLink\">сделать свою открытку</a></p>\n</section>\n\n<!-- 2. Заставка с фейерверком -->\n<section class=\"screen screen-intro\" id=\"screenIntro\" hidden>\n  <canvas id=\"fireworks\"></canvas>\n  <p class=\"eyebrow gold\">HAPPY BIRTHDAY!</p>\n  <h1 class=\"display-name gradient-text\" id=\"introName\">Чарос</h1>\n  <p class=\"script-line\" id=\"introAge\">Тебе 23!</p>\n  <button class=\"btn\" id=\"continueBtn\">Дальше <span aria-hidden=\"true\">→</span></button>\n</section>\n\n<!-- 3. Слайды -->\n<section class=\"screen screen-deck\" id=\"screenDeck\" hidden>\n  <div class=\"dots\" id=\"dots\"></div>\n\n  <div class=\"slides\" id=\"slides\">\n    <article class=\"slide is-active\" data-slide=\"card\">\n      <div class=\"card-glow\" aria-hidden=\"true\"></div>\n      <p class=\"eyebrow pink\">HAPPY BIRTHDAY!</p>\n      <div class=\"card-name-row\">\n        <span class=\"party\" aria-hidden=\"true\">🎉</span>\n        <h2 class=\"script-name gradient-text\" id=\"cardName\">Чарос</h2>\n        <span class=\"party right\" aria-hidden=\"true\">🎉</span>\n      </div>\n      <p class=\"card-age\" id=\"cardAge\">Тебе 23!</p>\n      <p class=\"card-date\" id=\"cardDate\">18 августа</p>\n      <p class=\"card-signoff\" id=\"cardSignoff\">С теплом,</p>\n      <p class=\"script-line\" id=\"cardFrom\">Фирдавс</p>\n      <div class=\"card-actions\">\n        <button class=\"btn\" id=\"unlockBtn\"><span aria-hidden=\"true\">🎁</span> Открыть подарок</button>\n      </div>\n    </article>\n\n    <article class=\"slide\" data-slide=\"letter\">\n      <div class=\"cake\" aria-hidden=\"true\">🎂</div>\n      <h2 class=\"letter-title\"><span id=\"letterTitleText\"></span><span class=\"caret\" id=\"caret\" aria-hidden=\"true\"></span></h2>\n      <div class=\"letter-body\">\n        <p class=\"letter-intro\" id=\"letterIntro\"></p>\n        <ol class=\"wishes\" id=\"wishes\"></ol>\n        <p class=\"letter-closing\" id=\"letterClosing\"></p>\n        <p class=\"letter-sign\" id=\"letterSign\"></p>\n      </div>\n      <p class=\"skip-hint\" id=\"skipHint\">нажми в любом месте, чтобы показать всё сразу</p>\n    </article>\n\n    <article class=\"slide\" data-slide=\"finale\">\n      <div class=\"finale-emoji\" aria-hidden=\"true\">🥳</div>\n      <h2 class=\"finale-title\" id=\"finaleTitle\">Ещё раз — с днём рождения!</h2>\n      <p class=\"finale-text\" id=\"finaleText\">Пусть этот год будет твоим лучшим.</p>\n      <button class=\"btn\" id=\"replayBtn\">Посмотреть заново <span aria-hidden=\"true\">✨</span></button>\n    </article>\n  </div>\n\n  <button class=\"nav-btn\" data-dir=\"prev\" aria-label=\"Назад\">‹</button>\n  <button class=\"nav-btn\" data-dir=\"next\" aria-label=\"Вперёд\">›</button>\n</section>\n\n<button class=\"music-toggle\" id=\"musicToggle\" aria-label=\"Музыка\">♪</button>\n<iframe class=\"music-frame\" id=\"musicFrame\" title=\"Музыка\" allow=\"autoplay; encrypted-media\" hidden></iframe>\n<audio id=\"musicAudio\" loop hidden></audio>", "create": "<main class=\"builder\">\n  <h1>Своя открытка</h1>\n  <p class=\"lead\">\n    Заполни поля — получится ссылка, которую можно отправить в WhatsApp или Telegram.\n    Вся открытка зашита в саму ссылку: сервер и база данных не нужны, никто ничего не хранит.\n  </p>\n\n  <form id=\"form\" autocomplete=\"off\">\n    <div class=\"row-2\">\n      <div class=\"field\">\n        <label for=\"to\">Кому</label>\n        <input id=\"to\" placeholder=\"Например: Чарос\">\n      </div>\n      <div class=\"field\">\n        <label for=\"from\">От кого</label>\n        <input id=\"from\" placeholder=\"Например: Фирдавс\">\n      </div>\n    </div>\n\n    <div class=\"row-2\">\n      <div class=\"field\">\n        <label for=\"age\">Сколько лет</label>\n        <input id=\"age\" type=\"number\" min=\"1\" max=\"130\" placeholder=\"23\">\n      </div>\n      <div class=\"field\">\n        <label for=\"date\">Дата</label>\n        <input id=\"date\" placeholder=\"18 августа\">\n      </div>\n    </div>\n\n    <div class=\"field\">\n      <label for=\"signoff\">Подпись перед именем</label>\n      <input id=\"signoff\" placeholder=\"С теплом,\">\n    </div>\n\n    <div class=\"field\">\n      <label for=\"letterTitle\">Заголовок письма</label>\n      <input id=\"letterTitle\" placeholder=\"С днём рождения!\">\n      <p class=\"hint\">Печатается по буквам на слайде с тортом.</p>\n    </div>\n\n    <div class=\"field\">\n      <label for=\"letterIntro\">Вступление письма</label>\n      <textarea id=\"letterIntro\" style=\"min-height:80px\"></textarea>\n    </div>\n\n    <div class=\"field\">\n      <label for=\"wishes\">Пожелания</label>\n      <textarea id=\"wishes\" style=\"min-height:220px\"></textarea>\n      <p class=\"hint\">По одному пожеланию в строке — они появятся пронумерованным списком.</p>\n    </div>\n\n    <div class=\"field\">\n      <label for=\"letterClosing\">Концовка письма</label>\n      <textarea id=\"letterClosing\" style=\"min-height:80px\"></textarea>\n    </div>\n\n    <div class=\"row-2\">\n      <div class=\"field\">\n        <label for=\"finaleTitle\">Последний слайд: заголовок</label>\n        <input id=\"finaleTitle\">\n      </div>\n      <div class=\"field\">\n        <label for=\"finaleText\">Последний слайд: текст</label>\n        <input id=\"finaleText\">\n      </div>\n    </div>\n\n    <div class=\"field\">\n      <label for=\"photoUrls\">Фотографии по ссылкам</label>\n      <textarea id=\"photoUrls\" style=\"min-height:90px\"\n                placeholder=\"https://…/photo1.jpg&#10;https://…/photo2.jpg\"></textarea>\n      <p class=\"hint\">По одной ссылке в строке. Есть фото — появится отдельный слайд.</p>\n    </div>\n\n    <div class=\"field\">\n      <label for=\"photoFiles\">Или прикрепить фото с устройства</label>\n      <input id=\"photoFiles\" type=\"file\" accept=\"image/*\" multiple>\n      <p class=\"hint\" id=\"photoStatus\">\n        Фото сжимаются и вшиваются прямо в ссылку. Больше 2–3 снимков — и ссылка станет очень длинной.\n      </p>\n    </div>\n\n    <div class=\"field\">\n      <label for=\"music\">Музыка</label>\n      <input id=\"music\" placeholder=\"Ссылка на YouTube, Spotify или .mp3\">\n      <p class=\"hint\">Включится, как только получатель откроет подарок.</p>\n    </div>\n\n    <div class=\"field\">\n      <label for=\"theme\">Тема</label>\n      <select id=\"theme\"></select>\n    </div>\n\n    <div class=\"btn-row\">\n      <button type=\"submit\" class=\"btn\">Создать ссылку</button>\n      <button type=\"button\" class=\"ghost-btn\" id=\"previewBtn\">Предпросмотр</button>\n    </div>\n  </form>\n\n  <div class=\"result\" id=\"result\">\n    <div class=\"field\" style=\"margin-top:24px\">\n      <label for=\"resultLink\">Ссылка на открытку</label>\n      <textarea class=\"result-link\" id=\"resultLink\" rows=\"4\" readonly></textarea>\n    </div>\n    <div class=\"btn-row\">\n      <button type=\"button\" class=\"btn\" id=\"copyBtn\">Скопировать</button>\n      <a class=\"ghost-btn\" id=\"openBtn\" target=\"_blank\" rel=\"noopener\">Открыть открытку</a>\n      <a class=\"ghost-btn\" id=\"waBtn\" target=\"_blank\" rel=\"noopener\">Отправить в WhatsApp</a>\n    </div>\n    <p class=\"hint\" id=\"sizeHint\" style=\"margin-top:14px;color:rgba(246,244,248,.6);font-size:12.5px\"></p>\n  </div>\n</main>\n\n<div class=\"toast\" id=\"toast\"></div>"};
+const SCRIPTS = {"card": "/* Открытка: подарок → заставка → слайды (открытка, пожелания, фото, финал). */\n(function () {\n  const card = readCardFromLocation() || Object.assign({}, DEFAULT_CARD);\n  applyTheme(card);\n\n  const $ = (id) => document.getElementById(id);\n  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;\n\n  /* ---------- тексты ---------- */\n  document.title = card.to ? `С днём рождения, ${card.to}! 🎉` : 'С днём рождения!';\n  const age = card.age ? `Тебе ${card.age}!` : '';\n\n  $('giftTo').textContent = card.to || 'Тебе';\n  $('introName').textContent = card.to || '';\n  $('introAge').textContent = age;\n  $('cardName').textContent = card.to || '';\n  $('cardAge').textContent = age;\n  $('cardAge').hidden = !age;\n  $('cardDate').textContent = card.date || '';\n  $('cardDate').hidden = !card.date;\n  $('cardSignoff').textContent = card.signoff || '';\n  $('cardFrom').textContent = card.from || '';\n  $('letterSign').textContent = card.from ? `— ${card.from}` : '';\n  $('finaleTitle').textContent = card.finaleTitle || '';\n  $('finaleText').textContent = card.finaleText || '';\n\n  /* ---------- конфетти ---------- */\n  const confetti = $('confetti');\n  const cctx = confetti.getContext('2d');\n  let pieces = [];\n\n  function sizeCanvas(el, context) {\n    const dpr = Math.min(window.devicePixelRatio || 1, 2);\n    el.width = innerWidth * dpr;\n    el.height = innerHeight * dpr;\n    el.style.width = innerWidth + 'px';\n    el.style.height = innerHeight + 'px';\n    context.setTransform(dpr, 0, 0, dpr, 0, 0);\n  }\n\n  function makePiece(fromTop) {\n    return {\n      x: Math.random() * innerWidth,\n      y: fromTop ? -20 - Math.random() * innerHeight : Math.random() * innerHeight,\n      w: 4 + Math.random() * 6,\n      h: 7 + Math.random() * 9,\n      speed: 18 + Math.random() * 40,\n      sway: 12 + Math.random() * 26,\n      phase: Math.random() * Math.PI * 2,\n      spin: (Math.random() - 0.5) * 3,\n      angle: Math.random() * Math.PI,\n      color: CONFETTI_COLORS[(Math.random() * CONFETTI_COLORS.length) | 0],\n      alpha: 0.35 + Math.random() * 0.45\n    };\n  }\n\n  function resetConfetti() {\n    pieces = Array.from({ length: innerWidth < 600 ? 34 : 60 }, () => makePiece(false));\n  }\n\n  /* ---------- фейерверк на заставке ---------- */\n  const fw = $('fireworks');\n  const fctx = fw.getContext('2d');\n  let sparks = [];\n  let fireworksOn = false;\n\n  function burst(x, y) {\n    const hue = CONFETTI_COLORS[(Math.random() * CONFETTI_COLORS.length) | 0];\n    const count = 34 + ((Math.random() * 16) | 0);\n    for (let i = 0; i < count; i++) {\n      const a = (Math.PI * 2 * i) / count;\n      const v = 70 + Math.random() * 130;\n      sparks.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 1, color: hue });\n    }\n  }\n\n  let lastBurst = 0;\n  function drawFireworks(dt, now) {\n    fctx.clearRect(0, 0, innerWidth, innerHeight);\n    if (now - lastBurst > 900) {\n      lastBurst = now;\n      burst(innerWidth * (0.2 + Math.random() * 0.6), innerHeight * (0.15 + Math.random() * 0.45));\n    }\n    sparks = sparks.filter((s) => s.life > 0);\n    sparks.forEach((s) => {\n      s.life -= dt * 0.6;\n      s.vy += 60 * dt;\n      s.x += s.vx * dt;\n      s.y += s.vy * dt;\n      fctx.globalAlpha = Math.max(s.life, 0);\n      fctx.fillStyle = s.color;\n      fctx.fillRect(s.x, s.y, 2.5, 2.5);\n    });\n    fctx.globalAlpha = 1;\n  }\n\n  /* ---------- общий цикл анимации ---------- */\n  let last = performance.now();\n  function tick(now) {\n    const dt = Math.min((now - last) / 1000, 0.05);\n    last = now;\n\n    cctx.clearRect(0, 0, innerWidth, innerHeight);\n    pieces.forEach((p, i) => {\n      p.y += p.speed * dt;\n      p.phase += dt;\n      p.angle += p.spin * dt;\n      const x = p.x + Math.sin(p.phase) * p.sway;\n      cctx.save();\n      cctx.translate(x, p.y);\n      cctx.rotate(p.angle);\n      cctx.globalAlpha = p.alpha;\n      cctx.fillStyle = p.color;\n      cctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);\n      cctx.restore();\n      if (p.y > innerHeight + 30) pieces[i] = makePiece(true);\n    });\n    cctx.globalAlpha = 1;\n\n    if (fireworksOn) drawFireworks(dt, now);\n    requestAnimationFrame(tick);\n  }\n\n  function resizeAll() {\n    sizeCanvas(confetti, cctx);\n    sizeCanvas(fw, fctx);\n    resetConfetti();\n  }\n\n  resizeAll();\n  addEventListener('resize', resizeAll);\n  if (!reduced) requestAnimationFrame(tick);\n\n  /* ---------- музыка ---------- */\n  const source = musicSource(card.music);\n  const toggle = $('musicToggle');\n  let playing = false;\n\n  function startMusic() {\n    if (!source || playing) return;\n    playing = true;\n    toggle.classList.add('is-on', 'is-playing');\n    if (source.kind === 'audio') {\n      const audio = $('musicAudio');\n      audio.src = source.src;\n      audio.volume = 0.6;\n      audio.play().catch(() => { playing = false; toggle.classList.remove('is-playing'); });\n    } else {\n      const frame = $('musicFrame');\n      frame.hidden = false;\n      frame.src = source.src;\n      /* Spotify рисует свой плеер — его показываем, YouTube прячем за кадром */\n      if (/spotify\\.com/.test(source.src)) frame.classList.add('is-visible');\n    }\n  }\n\n  function stopMusic() {\n    playing = false;\n    toggle.classList.remove('is-playing');\n    if (source.kind === 'audio') $('musicAudio').pause();\n    else {\n      const frame = $('musicFrame');\n      frame.src = '';\n      frame.classList.remove('is-visible');\n      frame.hidden = true;\n    }\n  }\n\n  if (source) {\n    toggle.classList.add('is-on');\n    toggle.addEventListener('click', () => (playing ? stopMusic() : startMusic()));\n  }\n\n  /* ---------- слайд с фотографиями ---------- */\n  const photos = (card.photos || []).filter(Boolean);\n  if (photos.length) {\n    const slide = document.createElement('article');\n    slide.className = 'slide';\n    slide.dataset.slide = 'photos';\n    slide.innerHTML = '<p class=\"eyebrow pink\">наши кадры</p>' +\n                      '<div class=\"photo-frame\"></div><div class=\"photo-dots\"></div>';\n    const finale = document.querySelector('[data-slide=\"finale\"]');\n    finale.parentNode.insertBefore(slide, finale);\n\n    const frame = slide.querySelector('.photo-frame');\n    const dots = slide.querySelector('.photo-dots');\n    let shown = 0;\n\n    photos.forEach((src, i) => {\n      const img = new Image();\n      img.src = src;\n      img.alt = `Фото ${i + 1}`;\n      img.loading = i === 0 ? 'eager' : 'lazy';\n      if (i === 0) img.classList.add('is-active');\n      frame.appendChild(img);\n\n      const dot = document.createElement('button');\n      dot.type = 'button';\n      dot.setAttribute('aria-label', `Фото ${i + 1}`);\n      if (i === 0) dot.classList.add('is-active');\n      dot.addEventListener('click', () => show(i));\n      dots.appendChild(dot);\n    });\n\n    const imgs = [...frame.children];\n    const dotEls = [...dots.children];\n    function show(next) {\n      shown = (next + photos.length) % photos.length;\n      imgs.forEach((el, i) => el.classList.toggle('is-active', i === shown));\n      dotEls.forEach((el, i) => el.classList.toggle('is-active', i === shown));\n    }\n    if (photos.length > 1) setInterval(() => show(shown + 1), 5000);\n  }\n\n  /* ---------- письмо с пожеланиями ---------- */\n  const wishesEl = $('wishes');\n  (card.wishes || []).forEach((text) => {\n    const li = document.createElement('li');\n    li.innerHTML = '<span></span>';\n    li.querySelector('span').textContent = text;\n    wishesEl.appendChild(li);\n  });\n\n  const timers = [];\n  let letterPlayed = false;\n  let letterDone = false;\n\n  function finishLetter() {\n    timers.splice(0).forEach(clearTimeout);\n    $('letterTitleText').textContent = card.letterTitle || '';\n    $('caret').classList.add('is-done');\n    $('letterIntro').textContent = card.letterIntro || '';\n    [...wishesEl.children].forEach((li) => li.classList.add('is-shown'));\n    $('letterClosing').textContent = card.letterClosing || '';\n    $('letterClosing').classList.add('is-shown');\n    $('skipHint').hidden = true;\n    letterDone = true;\n  }\n\n  function playLetter() {\n    if (letterPlayed) return;\n    letterPlayed = true;\n    if (reduced) { finishLetter(); return; }\n\n    const title = card.letterTitle || '';\n    const titleEl = $('letterTitleText');\n    let i = 0;\n\n    const typeNext = () => {\n      titleEl.textContent = title.slice(0, ++i);\n      if (i < title.length) timers.push(setTimeout(typeNext, 55));\n      else {\n        $('caret').classList.add('is-done');\n        $('letterIntro').textContent = card.letterIntro || '';\n        [...wishesEl.children].forEach((li, n) => {\n          timers.push(setTimeout(() => li.classList.add('is-shown'), 260 + n * 420));\n        });\n        timers.push(setTimeout(() => {\n          $('letterClosing').textContent = card.letterClosing || '';\n          $('letterClosing').classList.add('is-shown');\n          $('skipHint').hidden = true;\n          letterDone = true;\n        }, 260 + wishesEl.children.length * 420));\n      }\n    };\n    timers.push(setTimeout(typeNext, 400));\n  }\n\n  document.querySelector('[data-slide=\"letter\"]').addEventListener('click', (e) => {\n    if (letterPlayed && !letterDone && !e.target.closest('button')) finishLetter();\n  });\n\n  /* ---------- навигация по слайдам ---------- */\n  const slidesEl = $('slides');\n  const slides = [...slidesEl.children];\n  const dotsEl = $('dots');\n  const prevBtn = document.querySelector('.nav-btn[data-dir=\"prev\"]');\n  const nextBtn = document.querySelector('.nav-btn[data-dir=\"next\"]');\n  let current = 0;\n\n  slides.forEach((_, i) => {\n    const dot = document.createElement('button');\n    dot.type = 'button';\n    dot.setAttribute('aria-label', `Слайд ${i + 1}`);\n    if (i === 0) dot.classList.add('is-active');\n    dot.addEventListener('click', () => goTo(i));\n    dotsEl.appendChild(dot);\n  });\n\n  function goTo(next) {\n    current = Math.max(0, Math.min(next, slides.length - 1));\n    slides.forEach((el, i) => el.classList.toggle('is-active', i === current));\n    [...dotsEl.children].forEach((el, i) => el.classList.toggle('is-active', i === current));\n    prevBtn.disabled = current === 0;\n    nextBtn.disabled = current === slides.length - 1;\n    if (slides[current].dataset.slide === 'letter') playLetter();\n    scrollTo({ top: 0, behavior: 'smooth' });\n  }\n\n  prevBtn.addEventListener('click', () => goTo(current - 1));\n  nextBtn.addEventListener('click', () => goTo(current + 1));\n  $('unlockBtn').addEventListener('click', () => goTo(current + 1));\n  addEventListener('keydown', (e) => {\n    if ($('screenDeck').hidden) return;\n    if (e.key === 'ArrowLeft') goTo(current - 1);\n    if (e.key === 'ArrowRight') goTo(current + 1);\n  });\n\n  let touchX = null;\n  slidesEl.addEventListener('touchstart', (e) => { touchX = e.touches[0].clientX; }, { passive: true });\n  slidesEl.addEventListener('touchend', (e) => {\n    if (touchX === null) return;\n    const dx = e.changedTouches[0].clientX - touchX;\n    if (Math.abs(dx) > 50) goTo(current + (dx < 0 ? 1 : -1));\n    touchX = null;\n  }, { passive: true });\n\n  /* ---------- переходы между экранами ---------- */\n  const screens = { gift: $('screenGift'), intro: $('screenIntro'), deck: $('screenDeck') };\n\n  function showScreen(name) {\n    Object.entries(screens).forEach(([key, el]) => { el.hidden = key !== name; });\n    fireworksOn = name === 'intro' && !reduced;\n    if (!fireworksOn) { sparks = []; fctx.clearRect(0, 0, innerWidth, innerHeight); }\n    $('backBtn').hidden = name === 'gift';\n    scrollTo({ top: 0 });\n  }\n\n  let opened = false;\n  function openGift() {\n    if (opened) return;\n    opened = true;\n    $('giftbox').classList.add('is-opening');\n    startMusic();\n    setTimeout(() => showScreen('intro'), reduced ? 0 : 520);\n  }\n\n  const box = $('giftbox');\n  box.addEventListener('click', openGift);\n  box.addEventListener('keydown', (e) => {\n    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openGift(); }\n  });\n\n  $('continueBtn').addEventListener('click', () => { showScreen('deck'); goTo(0); });\n\n  $('backBtn').addEventListener('click', () => {\n    opened = false;\n    box.classList.remove('is-opening');\n    showScreen('gift');\n  });\n\n  $('replayBtn').addEventListener('click', () => { showScreen('intro'); goTo(0); });\n\n  goTo(0);\n  showScreen('gift');\n})();\n", "create": "/* Конструктор открытки: собирает форму в ссылку вида index.html#<base64url>. */\n(function () {\n  const $ = (id) => document.getElementById(id);\n  let attached = [];   // фото, вшитые в ссылку (data:URL)\n\n  /* ---------- темы ---------- */\n  const themeSelect = $('theme');\n  Object.entries(THEMES).forEach(([key, t]) => {\n    themeSelect.add(new Option(t.label, key, key === DEFAULT_CARD.theme, key === DEFAULT_CARD.theme));\n  });\n  themeSelect.addEventListener('change', () => applyTheme({ theme: themeSelect.value }));\n\n  /* ---------- предзаполнение: пример или редактирование существующей ссылки ---------- */\n  const preset = readCardFromLocation() || DEFAULT_CARD;\n  const TEXT_FIELDS = ['to', 'from', 'date', 'signoff', 'letterTitle', 'letterIntro',\n                       'letterClosing', 'finaleTitle', 'finaleText', 'music'];\n  TEXT_FIELDS.forEach((id) => { $(id).value = preset[id] || ''; });\n  $('age').value = preset.age || '';\n  $('wishes').value = (preset.wishes || []).join('\\n');\n  if (preset.theme && THEMES[preset.theme]) themeSelect.value = preset.theme;\n\n  const presetPhotos = preset.photos || [];\n  $('photoUrls').value = presetPhotos.filter((p) => !p.startsWith('data:')).join('\\n');\n  attached = presetPhotos.filter((p) => p.startsWith('data:'));\n  applyTheme({ theme: themeSelect.value });\n\n  /* ---------- сжатие приложенных фото ---------- */\n  function compress(file, maxSide = 900, quality = 0.72) {\n    return new Promise((resolve, reject) => {\n      const url = URL.createObjectURL(file);\n      const img = new Image();\n      img.onload = () => {\n        const scale = Math.min(1, maxSide / Math.max(img.width, img.height));\n        const canvas = document.createElement('canvas');\n        canvas.width = Math.round(img.width * scale);\n        canvas.height = Math.round(img.height * scale);\n        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);\n        URL.revokeObjectURL(url);\n        resolve(canvas.toDataURL('image/jpeg', quality));\n      };\n      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('bad image')); };\n      img.src = url;\n    });\n  }\n\n  $('photoFiles').addEventListener('change', async (e) => {\n    const files = [...e.target.files];\n    if (!files.length) return;\n    $('photoStatus').textContent = 'Обрабатываю фотографии…';\n    try {\n      attached = attached.concat(await Promise.all(files.map((f) => compress(f))));\n      const kb = Math.round(attached.join('').length / 1024);\n      $('photoStatus').textContent = `Прикреплено фото: ${attached.length} (~${kb} КБ в ссылке).`;\n    } catch (err) {\n      $('photoStatus').textContent = 'Не удалось прочитать один из файлов.';\n    }\n  });\n\n  /* ---------- сборка данных ---------- */\n  function collect() {\n    const data = { theme: themeSelect.value };\n    TEXT_FIELDS.forEach((id) => { data[id] = $(id).value.trim(); });\n    data.age = $('age').value.trim();\n    data.wishes = $('wishes').value.split('\\n').map((s) => s.trim()).filter(Boolean);\n    data.photos = $('photoUrls').value.split('\\n').map((s) => s.trim()).filter(Boolean).concat(attached);\n    return data;\n  }\n\n  const buildUrl = () => cardBaseUrl() + '#' + encodeCard(collect());\n\n  /* ---------- действия ---------- */\n  let toastTimer = null;\n  function toast(text) {\n    const el = $('toast');\n    el.textContent = text;\n    el.classList.add('is-visible');\n    clearTimeout(toastTimer);\n    toastTimer = setTimeout(() => el.classList.remove('is-visible'), 2200);\n  }\n\n  $('form').addEventListener('submit', (e) => {\n    e.preventDefault();\n    const url = buildUrl();\n    $('resultLink').value = url;\n    $('openBtn').href = url;\n    $('waBtn').href = 'https://wa.me/?text=' + encodeURIComponent('Тебе открытка 🎁 ' + url);\n    $('result').classList.add('is-visible');\n\n    const kb = Math.round(url.length / 1024);\n    $('sizeHint').textContent = kb > 8\n      ? `Длина ссылки ~${kb} КБ. Мессенджеры такое обычно переваривают, но если ссылка обрежется — замени вложенные фото на ссылки.`\n      : `Длина ссылки ~${kb} КБ — отправляется куда угодно.`;\n    $('result').scrollIntoView({ behavior: 'smooth', block: 'nearest' });\n  });\n\n  $('previewBtn').addEventListener('click', () => window.open(buildUrl(), '_blank', 'noopener'));\n\n  $('copyBtn').addEventListener('click', async () => {\n    try {\n      await navigator.clipboard.writeText($('resultLink').value);\n      toast('Ссылка скопирована');\n    } catch (e) {\n      $('resultLink').select();\n      document.execCommand('copy');\n      toast('Ссылка скопирована');\n    }\n  });\n})();\n"};
+
+/* Смена вида — это всегда перезагрузка: скрипты видов рассчитаны на свежий DOM. */
+addEventListener('hashchange', () => location.reload());
+
+const view = location.hash.replace(/^#/, '').startsWith('make') ? 'create' : 'card';
+document.getElementById('app').innerHTML = VIEWS[view];
+new Function(SCRIPTS[view])();
+</script>
+</body>
+</html>

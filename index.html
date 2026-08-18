@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>С днём рождения!</title>
+<meta name="description" content="Поздравительная открытка с подарком, тортом и списком пожеланий.">
+<meta name="theme-color" content="#17171d">
+<meta property="og:title" content="Тебе открытка 🎁">
+<meta property="og:description" content="Открой — это для тебя.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>🎉</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Playfair+Display:ital,wght@0,700;1,600&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<canvas id="confetti"></canvas>
+
+<button class="ghost-btn back-btn" id="backBtn" hidden>← В начало</button>
+
+<!-- 1. Подарок. Первый тап нужен и для драматургии, и чтобы браузер разрешил звук -->
+<section class="screen screen-gift" id="screenGift">
+  <div class="giftbox" id="giftbox" role="button" tabindex="0" aria-label="Открыть подарок">
+    <div class="ribbon-v"></div>
+    <div class="ribbon-h"></div>
+    <svg class="bow" viewBox="0 0 200 112" aria-hidden="true">
+      <defs>
+        <linearGradient id="bowFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#ff9dc4"/>
+          <stop offset="100%" stop-color="var(--accent)"/>
+        </linearGradient>
+      </defs>
+      <path class="bow-tail" d="M95 54 L70 108 L90 98 L100 62 Z"/>
+      <path class="bow-tail" d="M105 54 L130 108 L110 98 L100 62 Z"/>
+      <path class="bow-loop" d="M100 50 C66 8, 26 14, 20 40 C14 66, 60 76, 100 54 Z"/>
+      <path class="bow-loop" d="M100 50 C134 8, 174 14, 180 40 C186 66, 140 76, 100 54 Z"/>
+      <rect class="bow-knot" x="88" y="40" width="24" height="22" rx="6"/>
+    </svg>
+  </div>
+  <p class="eyebrow dim">для</p>
+  <h1 class="script-name gradient-text" id="giftTo">Чарос</h1>
+  <p class="hint">нажми, чтобы открыть</p>
+  <p class="make-link"><a href="create.html" id="makeLink">сделать свою открытку</a></p>
+</section>
+
+<!-- 2. Заставка с фейерверком -->
+<section class="screen screen-intro" id="screenIntro" hidden>
+  <canvas id="fireworks"></canvas>
+  <p class="eyebrow gold">HAPPY BIRTHDAY!</p>
+  <h1 class="display-name gradient-text" id="introName">Чарос</h1>
+  <p class="script-line" id="introAge">Тебе 23!</p>
+  <button class="btn" id="continueBtn">Дальше <span aria-hidden="true">→</span></button>
+</section>
+
+<!-- 3. Слайды -->
+<section class="screen screen-deck" id="screenDeck" hidden>
+  <div class="dots" id="dots"></div>
+
+  <div class="slides" id="slides">
+    <article class="slide is-active" data-slide="card">
+      <div class="card-glow" aria-hidden="true"></div>
+      <p class="eyebrow pink">HAPPY BIRTHDAY!</p>
+      <div class="card-name-row">
+        <span class="party" aria-hidden="true">🎉</span>
+        <h2 class="script-name gradient-text" id="cardName">Чарос</h2>
+        <span class="party right" aria-hidden="true">🎉</span>
+      </div>
+      <p class="card-age" id="cardAge">Тебе 23!</p>
+      <p class="card-date" id="cardDate">18 августа</p>
+      <p class="card-signoff" id="cardSignoff">С теплом,</p>
+      <p class="script-line" id="cardFrom">Фирдавс</p>
+      <div class="card-actions">
+        <button class="btn" id="unlockBtn"><span aria-hidden="true">🎁</span> Открыть подарок</button>
+      </div>
+    </article>
+
+    <article class="slide" data-slide="letter">
+      <div class="cake" aria-hidden="true">🎂</div>
+      <h2 class="letter-title"><span id="letterTitleText"></span><span class="caret" id="caret" aria-hidden="true"></span></h2>
+      <div class="letter-body">
+        <p class="letter-intro" id="letterIntro"></p>
+        <ol class="wishes" id="wishes"></ol>
+        <p class="letter-closing" id="letterClosing"></p>
+        <p class="letter-sign" id="letterSign"></p>
+      </div>
+      <p class="skip-hint" id="skipHint">нажми в любом месте, чтобы показать всё сразу</p>
+    </article>
+
+    <article class="slide" data-slide="finale">
+      <div class="finale-emoji" aria-hidden="true">🥳</div>
+      <h2 class="finale-title" id="finaleTitle">Ещё раз — с днём рождения!</h2>
+      <p class="finale-text" id="finaleText">Пусть этот год будет твоим лучшим.</p>
+      <button class="btn" id="replayBtn">Посмотреть заново <span aria-hidden="true">✨</span></button>
+    </article>
+  </div>
+
+  <button class="nav-btn" data-dir="prev" aria-label="Назад">‹</button>
+  <button class="nav-btn" data-dir="next" aria-label="Вперёд">›</button>
+</section>
+
+<button class="music-toggle" id="musicToggle" aria-label="Музыка">♪</button>
+<iframe class="music-frame" id="musicFrame" title="Музыка" allow="autoplay; encrypted-media" hidden></iframe>
+<audio id="musicAudio" loop hidden></audio>
+
+<script src="assets/js/shared.js"></script>
+<script src="assets/js/card.js"></script>
+</body>
+</html>

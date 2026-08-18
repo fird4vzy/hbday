@@ -1,0 +1,80 @@
+#!/usr/bin/env python3
+"""Собирает открытку и конструктор в один самодостаточный HTML-файл.
+
+Два выхода:
+  dist/card.html     — полноценный документ, можно открыть с диска или залить куда угодно
+  dist/artifact.html — то же без обёртки doctype/html/body (для хостингов, которые её добавляют сами)
+
+Роутинг внутри одного файла: #make — конструктор, любой другой хэш — открытка.
+Разметка обеих страниц хранится строками и вставляется только для активного вида,
+потому что id частично пересекаются (например, #message есть и там, и там).
+"""
+
+import json
+import pathlib
+import re
+
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+
+
+def read(path):
+    return (ROOT / path).read_text(encoding='utf-8')
+
+
+def body_of(html):
+    return re.search(r'<body>(.*?)\n<script', html, re.S).group(1).strip()
+
+
+def main():
+    css = read('assets/css/style.css')
+    shared = read('assets/js/shared.js')
+
+    card_view = body_of(read('index.html')).replace('href="create.html"', 'href="#make"')
+    create_view = body_of(read('create.html'))
+
+    views = {'card': card_view, 'create': create_view}
+    scripts = {'card': read('assets/js/card.js'), 'create': read('assets/js/create.js')}
+
+    content = f"""<title>Открытка Чарос</title>
+<meta name="description" content="Поздравительная открытка с подарком, тортом и списком пожеланий.">
+<meta name="theme-color" content="#17171d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Playfair+Display:ital,wght@0,700;1,600&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+{css}
+</style>
+
+<div id="app"></div>
+
+<script>
+{shared}
+
+const VIEWS = {json.dumps(views, ensure_ascii=False)};
+const SCRIPTS = {json.dumps(scripts, ensure_ascii=False)};
+
+/* Смена вида — это всегда перезагрузка: скрипты видов рассчитаны на свежий DOM. */
+addEventListener('hashchange', () => location.reload());
+
+const view = location.hash.replace(/^#/, '').startsWith('make') ? 'create' : 'card';
+document.getElementById('app').innerHTML = VIEWS[view];
+new Function(SCRIPTS[view])();
+</script>"""
+
+    dist = ROOT / 'dist'
+    dist.mkdir(exist_ok=True)
+    (dist / 'artifact.html').write_text(content, encoding='utf-8')
+    (dist / 'card.html').write_text(
+        '<!doctype html>\n<html lang="ru">\n<head>\n<meta charset="utf-8">\n'
+        '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
+        + content.replace('</style>', '</style>\n</head>\n<body>', 1)
+        + '\n</body>\n</html>\n',
+        encoding='utf-8')
+
+    for name in ('card.html', 'artifact.html'):
+        size = (dist / name).stat().st_size
+        print(f'dist/{name}: {size / 1024:.1f} КБ')
+
+
+if __name__ == '__main__':
+    main()
