@@ -8,14 +8,10 @@
 
   /* ---------- тексты ---------- */
   document.title = card.to ? `С днём рождения, ${card.to}! 🎉` : 'С днём рождения!';
-  const age = card.age ? `Тебе ${card.age}!` : '';
 
   $('giftTo').textContent = card.to || 'Тебе';
   $('introName').textContent = card.to || '';
-  $('introAge').textContent = age;
   $('cardName').textContent = card.to || '';
-  $('cardAge').textContent = age;
-  $('cardAge').hidden = !age;
   $('cardDate').textContent = card.date || '';
   $('cardDate').hidden = !card.date;
   $('cardSignoff').textContent = card.signoff || '';
@@ -57,6 +53,55 @@
   function resetConfetti() {
     pieces = Array.from({ length: innerWidth < 600 ? 34 : 60 }, () => makePiece(false));
   }
+
+  /* ---------- пасхалка: тап по фону рассыпает фонтан ---------- */
+  let tapBits = [];
+
+  function spawnBurst(x, y) {
+    if (reduced || tapBits.length > 90) return;
+    const count = 14;
+    for (let i = 0; i < count; i++) {
+      const angle = -Math.PI / 2 + (Math.random() - 0.5) * 2.4;
+      const speed = 220 + Math.random() * 320;
+      tapBits.push({
+        x, y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        size: 20 + Math.random() * 20,
+        angle: (Math.random() - 0.5) * 0.8,
+        spin: (Math.random() - 0.5) * 6,
+        life: 1,
+        char: BURST_EMOJI[(Math.random() * BURST_EMOJI.length) | 0]
+      });
+    }
+  }
+
+  function drawBurst(dt) {
+    tapBits = tapBits.filter((p) => p.life > 0 && p.y < innerHeight + 80);
+    tapBits.forEach((p) => {
+      p.life -= dt * 0.42;
+      p.vy += 780 * dt;
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      p.angle += p.spin * dt;
+      cctx.save();
+      cctx.translate(p.x, p.y);
+      cctx.rotate(p.angle);
+      cctx.globalAlpha = Math.min(1, Math.max(p.life, 0) * 1.6);
+      cctx.font = `${p.size}px serif`;
+      cctx.textAlign = 'center';
+      cctx.textBaseline = 'middle';
+      cctx.fillText(p.char, 0, 0);
+      cctx.restore();
+    });
+    cctx.globalAlpha = 1;
+  }
+
+  /* Кнопки и ссылки не трогаем — там свои действия. */
+  addEventListener('pointerdown', (e) => {
+    if (e.target.closest('button, a, input, textarea, select')) return;
+    spawnBurst(e.clientX, e.clientY);
+  });
 
   /* ---------- фейерверк на заставке ---------- */
   const fw = $('fireworks');
@@ -116,6 +161,7 @@
       if (p.y > innerHeight + 30) pieces[i] = makePiece(true);
     });
     cctx.globalAlpha = 1;
+    if (tapBits.length) drawBurst(dt);
 
     if (fireworksOn) drawFireworks(dt, now);
     requestAnimationFrame(tick);

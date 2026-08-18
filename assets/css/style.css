@@ -27,6 +27,10 @@ body {
   font-family: var(--sans);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  overscroll-behavior-y: none;
+  -webkit-tap-highlight-color: transparent;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
 }
 
 /* тёплые пятна света по углам */
@@ -67,7 +71,7 @@ body::before {
   align-items: center;
   justify-content: center;
   gap: 18px;
-  padding: 84px 20px 48px;
+  padding: calc(84px + env(safe-area-inset-top)) max(20px, env(safe-area-inset-left)) calc(48px + env(safe-area-inset-bottom));
   text-align: center;
 }
 
@@ -168,8 +172,8 @@ body::before {
 
 .back-btn {
   position: fixed;
-  left: 16px;
-  top: 16px;
+  left: calc(16px + env(safe-area-inset-left));
+  top: calc(16px + env(safe-area-inset-top));
   z-index: 30;
 }
 
@@ -238,16 +242,6 @@ body::before {
   50%      { transform: translateY(-12px); }
 }
 
-.make-link {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 14px;
-  margin: 0;
-  font-size: 12px;
-}
-.make-link a { color: rgba(246, 244, 248, 0.34); }
-
 /* ============ 2. заставка ============ */
 .screen-intro .display-name { margin: 6px 0 4px; }
 
@@ -257,13 +251,14 @@ body::before {
 .dots {
   position: fixed;
   left: 50%;
-  top: 22px;
+  top: calc(22px + env(safe-area-inset-top));
   translate: -50% 0;
   z-index: 30;
   display: flex;
   gap: 12px;
 }
 .dots button {
+  position: relative;
   width: 13px;
   height: 13px;
   padding: 0;
@@ -272,6 +267,12 @@ body::before {
   background: rgba(255, 255, 255, 0.08);
   cursor: pointer;
   transition: background 0.3s, box-shadow 0.3s;
+}
+/* Точки маленькие — расширяем область нажатия до пальца, не трогая вид. */
+.dots button::after {
+  content: '';
+  position: absolute;
+  inset: -14px -8px;
 }
 .dots button.is-active {
   background: color-mix(in srgb, var(--accent) 60%, #fff);
@@ -311,8 +312,8 @@ body::before {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
-.nav-btn[data-dir="prev"] { left: 18px; }
-.nav-btn[data-dir="next"] { right: 18px; }
+.nav-btn[data-dir="prev"] { left: calc(18px + env(safe-area-inset-left)); }
+.nav-btn[data-dir="next"] { right: calc(18px + env(safe-area-inset-right)); }
 .nav-btn:disabled { opacity: 0.25; cursor: default; }
 
 /* — слайд 1: открытка — */
@@ -322,8 +323,16 @@ body::before {
   justify-content: center;
   gap: clamp(6px, 3vw, 26px);
 }
-.card-name-row .party { font-size: clamp(30px, 8vw, 58px); }
+.card-name-row .party { display: block; flex: 0 0 auto; }
 .card-name-row .party.right { scale: -1 1; }
+.popper {
+  display: block;
+  width: clamp(44px, 11vw, 76px);
+  height: auto;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.45));
+  animation: float 3.6s ease-in-out infinite;
+}
+.card-name-row .party.right .popper { animation-delay: -1.8s; }
 
 .card-glow {
   position: absolute;
@@ -339,21 +348,30 @@ body::before {
   z-index: -1;
 }
 
-.card-age {
-  font-size: clamp(22px, 5.5vw, 30px);
-  font-weight: 700;
-  margin: 10px 0 0;
-}
-.card-date { margin: 14px 0 0; color: var(--muted); font-size: 16px; }
+.card-date { margin: 18px 0 0; color: var(--muted); font-size: 16px; }
 .card-signoff { margin: 18px 0 0; color: var(--muted); font-size: 16px; }
 .card-actions { margin-top: 30px; }
 
 /* — слайд 2: письмо с пожеланиями — */
 .cake {
-  font-size: clamp(64px, 16vw, 96px);
-  line-height: 1;
-  filter: drop-shadow(0 0 26px color-mix(in srgb, var(--warm) 45%, transparent));
+  display: block;
+  width: clamp(132px, 34vw, 180px);
+  height: auto;
+  margin: 0 auto;
+  overflow: visible;
+  filter: drop-shadow(0 14px 24px rgba(0, 0, 0, 0.5));
   animation: float 4s ease-in-out infinite;
+}
+
+/* Огонёк свечи живёт своей жизнью — лёгкое дрожание вокруг фитиля. */
+.cake-flame {
+  transform-origin: 100px 32px;
+  animation: flicker 1.6s ease-in-out infinite;
+}
+@keyframes flicker {
+  0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  30%      { transform: scale(0.92, 1.06) rotate(-3deg); opacity: 0.92; }
+  65%      { transform: scale(1.06, 0.95) rotate(3deg); opacity: 1; }
 }
 
 .letter-title {
@@ -475,15 +493,17 @@ body::before {
 .photo-dots button.is-active { background: var(--accent); width: 20px; border-radius: 4px; }
 
 /* — финальный слайд — */
-.finale-emoji { font-size: clamp(64px, 16vw, 96px); animation: float 4s ease-in-out infinite; }
+.finale-poppers { display: flex; justify-content: center; gap: clamp(10px, 4vw, 28px); }
+.finale-poppers .popper { width: clamp(56px, 15vw, 92px); }
+.finale-poppers .right { scale: -1 1; animation-delay: -1.2s; }
 .finale-title { font-family: var(--display); font-size: clamp(30px, 7vw, 48px); margin: 20px 0 0; }
 .finale-text { margin: 14px 0 30px; font-size: 17px; line-height: 1.6; color: var(--muted); }
 
 /* ============ музыка ============ */
 .music-toggle {
   position: fixed;
-  right: 18px;
-  bottom: 18px;
+  right: calc(18px + env(safe-area-inset-right));
+  bottom: calc(18px + env(safe-area-inset-bottom));
   z-index: 30;
   width: 52px;
   height: 52px;
@@ -583,11 +603,35 @@ body::before {
 
 @media (max-width: 560px) {
   /* На узком экране стрелки по бокам легли бы поверх текста — уводим их вниз слева. */
-  .nav-btn { width: 46px; height: 46px; top: auto; translate: none; bottom: 16px; }
-  .nav-btn[data-dir="prev"] { left: 16px; }
-  .nav-btn[data-dir="next"] { left: 72px; right: auto; }
-  .screen-deck { padding-bottom: 84px; }
+  .nav-btn {
+    width: 48px;
+    height: 48px;
+    top: auto;
+    translate: none;
+    bottom: calc(16px + env(safe-area-inset-bottom));
+  }
+  .nav-btn[data-dir="prev"] { left: calc(16px + env(safe-area-inset-left)); }
+  .nav-btn[data-dir="next"] { left: calc(74px + env(safe-area-inset-left)); right: auto; }
+  .screen-deck { padding-bottom: calc(88px + env(safe-area-inset-bottom)); }
+
+  .back-btn { padding: 9px 15px; font-size: 13px; }
+  .screen { gap: 14px; }
+  .letter-body { padding: 18px 16px; border-radius: 18px; }
+  .letter-intro, .wishes li, .letter-closing { font-size: 16px; }
+  .wishes li { grid-template-columns: 26px 1fr; gap: 10px; }
+  .wishes li::before { width: 26px; height: 26px; font-size: 12px; }
+  .letter-title { margin-top: 16px; }
+  .card-name-row { gap: 4px; }
+  .btn { padding: 14px 24px; font-size: 15px; }
   .row-2 { grid-template-columns: 1fr; }
+}
+
+/* Низкие экраны в альбомной ориентации: убираем лишний вертикальный воздух. */
+@media (max-height: 520px) and (orientation: landscape) {
+  .screen { padding-top: calc(64px + env(safe-area-inset-top)); gap: 10px; }
+  .giftbox { width: min(280px, 46vw); }
+  .cake { width: 112px; }
+  .finale-poppers .popper { width: 56px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

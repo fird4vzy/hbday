@@ -15,7 +15,6 @@
   const TEXT_FIELDS = ['to', 'from', 'date', 'signoff', 'letterTitle', 'letterIntro',
                        'letterClosing', 'finaleTitle', 'finaleText', 'music'];
   TEXT_FIELDS.forEach((id) => { $(id).value = preset[id] || ''; });
-  $('age').value = preset.age || '';
   $('wishes').value = (preset.wishes || []).join('\n');
   if (preset.theme && THEMES[preset.theme]) themeSelect.value = preset.theme;
 
@@ -60,7 +59,6 @@
   function collect() {
     const data = { theme: themeSelect.value };
     TEXT_FIELDS.forEach((id) => { data[id] = $(id).value.trim(); });
-    data.age = $('age').value.trim();
     data.wishes = $('wishes').value.split('\n').map((s) => s.trim()).filter(Boolean);
     data.photos = $('photoUrls').value.split('\n').map((s) => s.trim()).filter(Boolean).concat(attached);
     return data;
