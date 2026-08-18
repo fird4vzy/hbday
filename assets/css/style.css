@@ -72,9 +72,10 @@ body::before {
 
 .doodle {
   position: absolute;
-  width: 120px;
+  width: 150px;
   height: auto;
-  opacity: 0.55;
+  aspect-ratio: 254 / 252;
+  opacity: 0.5;
   animation: bob 5s ease-in-out infinite;
 }
 
@@ -83,44 +84,37 @@ body::before {
   50%      { translate: 0 -10px; }
 }
 
-/* общие штрихи фигур */
-.d-fill    { fill: #fff; stroke: var(--text); stroke-width: 5; }
+/* штрихи фигур */
+.d-fill    { fill: #fff; stroke: var(--text); stroke-width: 5; stroke-linejoin: round; }
 .d-line    { fill: none; stroke: var(--text); stroke-width: 5; stroke-linecap: round; }
+.d-thin    { fill: none; stroke: var(--text); stroke-width: 4; stroke-linecap: round; }
 .d-dot     { fill: var(--text); }
-.d-hat     { fill: var(--accent); stroke: var(--text); stroke-width: 5; stroke-linejoin: round; }
-.d-hat-band{ fill: none; stroke: var(--warm); stroke-width: 6; stroke-linecap: round; }
-.d-star    { fill: var(--warm); stroke: var(--text); stroke-width: 3; stroke-linejoin: round; }
-.d-flame   { fill: var(--warm); stroke: var(--text); stroke-width: 3; }
-.d-balloon { fill: var(--glow); stroke: var(--text); stroke-width: 5; }
-.d-confetti rect, .d-confetti circle { fill: var(--accent); }
-.d-confetti rect:nth-child(even) { fill: var(--glow); }
-.d-text {
-  font-family: var(--script);
-  font-size: 30px;
-  font-weight: 700;
-  fill: var(--accent);
-}
+.d-star    { fill: var(--warm); stroke: var(--text); stroke-width: 4; stroke-linejoin: round; }
+.d-flame   { fill: var(--warm); stroke: var(--text); stroke-width: 3.5; }
+.d-balloon { fill: #8fb8f0; stroke: var(--text); stroke-width: 5; }
+.d-heart   { fill: #ff4d6d; }
+.s1 { fill: #ff6ea9; } .s2 { fill: #ffd23f; } .s3 { fill: #5ad1a5; } .s4 { fill: #7cc0ff; }
 
 /* Раскладка: фигуры стоят по краям, чтобы не лезть в текст. */
-.d1 { left: 3%;  bottom: 6%;  width: 132px; animation-delay: -0.4s; rotate: -4deg; }
-.d2 { right: 4%; top: 12%;    width: 118px; animation-delay: -1.6s; rotate: 5deg; }
-.d3 { right: 6%; bottom: 7%;  width: 150px; animation-delay: -2.6s; rotate: 3deg; }
-.d4 { left: 6%;  top: 10%;    width: 112px; animation-delay: -3.4s; rotate: -6deg; }
-.d5 { left: 21%; bottom: 2%;  width: 92px;  animation-delay: -2s;   rotate: 4deg; opacity: 0.32; }
-.d6 { right: 22%; top: 3%;    width: 88px;  animation-delay: -1s;   rotate: -3deg; opacity: 0.32; }
+.d1 { left: 1%;   bottom: 4%;  width: 168px; animation-delay: -0.4s; rotate: -3deg; }
+.d2 { right: 2%;  top: 9%;     width: 152px; animation-delay: -1.6s; rotate: 4deg; }
+.d3 { right: 3%;  bottom: 5%;  width: 176px; animation-delay: -2.6s; rotate: 2deg; }
+.d4 { left: 4%;   top: 7%;     width: 150px; animation-delay: -3.4s; rotate: -5deg; }
+.d5 { left: 19%;  bottom: 1%;  width: 118px; animation-delay: -2s;   rotate: 3deg; opacity: 0.3; }
+.d6 { right: 20%; top: 1%;     width: 112px; animation-delay: -1s;   rotate: -3deg; opacity: 0.3; }
 
 @media (max-width: 1100px) {
   .d5, .d6 { display: none; }
-  .doodle { width: 104px; opacity: 0.45; }
-  .d3 { width: 120px; }
+  .doodle { width: 130px; opacity: 0.42; }
+  .d3 { width: 142px; }
 }
 
 @media (max-width: 720px) {
-  .d1 { left: -2%;  bottom: 3%;  width: 96px; }
-  .d2 { right: -2%; top: 6%;     width: 88px; }
+  .d1 { left: -6%;  bottom: 2%; width: 116px; }
+  .d2 { right: -6%; top: 5%;    width: 108px; }
   .d3 { display: none; }
-  .d4 { left: -3%;  top: 4%;     width: 84px; opacity: 0.3; }
-  .doodle { opacity: 0.38; }
+  .d4 { left: -7%;  top: 3%;    width: 104px; opacity: 0.28; }
+  .doodle { opacity: 0.34; }
 }
 
 /* ============ общие элементы ============ */
@@ -237,7 +231,7 @@ body::before {
   font-size: clamp(1px, 0.3vw, 1.6px);
   width: 240em;
   height: 250em;
-  perspective: 900em;
+  perspective: 2200em;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
@@ -255,7 +249,7 @@ body::before {
 .gift-tilt {
   width: 0;
   height: 0;
-  transform: rotateX(14deg);
+  transform: rotateX(-20deg);
   transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -266,8 +260,8 @@ body::before {
 }
 
 @keyframes sway {
-  from { rotate: y -26deg; }
-  to   { rotate: y 26deg; }
+  from { rotate: y 9deg; }
+  to   { rotate: y 41deg; }
 }
 @keyframes hover {
   0%, 100% { translate: 0 0; }
@@ -316,13 +310,13 @@ body::before {
 .gift-lid {
   width: 0;
   height: 0;
-  transform: translateY(-83em);
+  transform: translateY(-80em);
   transition: transform 0.75s cubic-bezier(0.5, -0.4, 0.4, 1.4), opacity 0.6s ease;
 }
 
 .lt {
-  width: 214em;
-  height: 174em;
+  width: 206em;
+  height: 166em;
   transform-style: preserve-3d;
   backface-visibility: visible;
   transform: translate(-50%, -50%) rotateX(90deg) translateZ(18em);
@@ -333,10 +327,10 @@ body::before {
       var(--accent) 60%,
       color-mix(in srgb, var(--accent) 82%, var(--glow)));
 }
-.lf { width: 214em; height: 36em; transform: translate(-50%, -50%) translateZ(87em); }
-.lb { width: 214em; height: 36em; transform: translate(-50%, -50%) rotateY(180deg) translateZ(87em); }
-.lr { width: 174em; height: 36em; transform: translate(-50%, -50%) rotateY(90deg) translateZ(107em); }
-.ll { width: 174em; height: 36em; transform: translate(-50%, -50%) rotateY(-90deg) translateZ(107em); }
+.lf { width: 206em; height: 36em; transform: translate(-50%, -50%) translateZ(83em); }
+.lb { width: 206em; height: 36em; transform: translate(-50%, -50%) rotateY(180deg) translateZ(83em); }
+.lr { width: 166em; height: 36em; transform: translate(-50%, -50%) rotateY(90deg) translateZ(103em); }
+.ll { width: 166em; height: 36em; transform: translate(-50%, -50%) rotateY(-90deg) translateZ(103em); }
 
 /* лента на крышке идёт крестом */
 .gift-lid .lf::before,
@@ -386,7 +380,7 @@ body::before {
   height: auto;
   overflow: visible;
   translate: -50% -50%;
-  transform: translateY(-54em);
+  transform: translateY(-50em);
   filter: drop-shadow(0 4em 8em rgba(42, 33, 64, 0.3));
 }
 .bow-loop { fill: url(#bowFill); }
@@ -405,7 +399,7 @@ body::before {
   filter: blur(6em);
 }
 
-.gift-stage:hover .gift-tilt { transform: rotateX(22deg); }
+.gift-stage:hover .gift-tilt { transform: rotateX(-26deg); }
 
 /* открытие: крышка взлетает и уходит, коробка растворяется */
 .gift-stage.is-opening .gift-lid {
@@ -529,6 +523,9 @@ body::before {
   cursor: grab;
   touch-action: pan-y;
   -webkit-tap-highlight-color: transparent;
+  /* без этого перетаскивание выделяет надпись на торте */
+  user-select: none;
+  -webkit-user-select: none;
 }
 .cake3d:active { cursor: grabbing; }
 
@@ -539,7 +536,7 @@ body::before {
   width: 0;
   height: 0;
   transform-style: preserve-3d;
-  transform: rotateX(14deg);
+  transform: rotateX(-38deg);
 }
 
 .cake-orbit > * {
@@ -569,6 +566,7 @@ body::before {
 .c-top {
   width: 192em;
   height: 192em;
+  overflow: hidden;
   border-radius: 50%;
   background:
     radial-gradient(circle at 38% 32%, #fffdf6, #f6e6cb 62%, #e6d0ae);
@@ -610,14 +608,20 @@ body::before {
 }
 
 /* имя, выведенное «кремом» на боку */
-.c-letter span {
+/* Имя лежит на кремовой крышке: сама крышка развёрнута лицом вверх,
+   поэтому текст на ней читается, а не зеркалится. */
+.c-name {
+  position: absolute;
+  left: 50%;
+  top: 62%;
+  translate: -50% -50%;
   font-family: var(--script);
   font-weight: 700;
-  font-size: 42em;
+  font-size: 40em;
   line-height: 1;
-  color: #fffaf0;
-  text-shadow: 0 2px 0 rgba(90, 55, 30, 0.5);
   white-space: pre;
+  color: var(--accent);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
 .cake-hint {
@@ -747,7 +751,22 @@ body::before {
 .photo-dots button.is-active { background: var(--accent); width: 20px; border-radius: 4px; }
 
 /* — финальный слайд — */
-.finale-emoji { font-size: clamp(64px, 16vw, 96px); animation: float 4s ease-in-out infinite; }
+/* Финал: те же человечки, только в полный цвет и покрупнее. */
+.finale-crew {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: clamp(0px, 1vw, 16px);
+  margin-bottom: 4px;
+}
+.finale-crew svg {
+  width: clamp(96px, 24vw, 168px);
+  height: auto;
+  aspect-ratio: 254 / 252;
+  animation: bob 4.4s ease-in-out infinite;
+}
+.finale-crew svg:nth-child(2) { animation-delay: -1.4s; }
+.finale-crew svg:nth-child(3) { animation-delay: -2.8s; }
 .finale-title { font-family: var(--display); font-size: clamp(30px, 7vw, 48px); margin: 20px 0 0; }
 .finale-text { margin: 14px 0 30px; font-size: 17px; line-height: 1.6; color: var(--muted); }
 
@@ -883,7 +902,7 @@ body::before {
 @media (max-height: 520px) and (orientation: landscape) {
   .screen { padding-top: calc(64px + env(safe-area-inset-top)); gap: 10px; }
     .cake3d { font-size: 0.72px; }
-  .finale-emoji { font-size: 54px; }
+  .finale-crew svg { width: 84px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

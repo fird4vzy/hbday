@@ -347,7 +347,7 @@
       const r = box.getBoundingClientRect();
       const dx = (e.clientX - r.left) / r.width - 0.5;
       const dy = (e.clientY - r.top) / r.height - 0.5;
-      giftTilt.style.transform = `rotateX(${14 + dy * 16}deg) rotateY(${dx * 24}deg)`;
+      giftTilt.style.transform = `rotateX(${-20 - dy * 12}deg) rotateY(${dx * 26}deg)`;
     });
     box.addEventListener('pointerleave', () => { giftTilt.style.transform = ''; });
   }
@@ -398,44 +398,35 @@
 
     /* Крышку торта приподнимаем над кромкой панелей: ровно в их плоскости
        браузер не может решить, что рисовать первым, и прячет её за боками. */
-    const TOP_Y = H / 2 + 8;
+    const TOP_Y = H / 2 + 3;
     const top = document.createElement('div');
     top.className = 'c-top';
     top.style.transform = `translate(-50%, -50%) rotateX(90deg) translateZ(${TOP_Y}em)`;
     parts.push(top);
 
     /* свеча — тоже цилиндр, иначе с боку она схлопнулась бы в линию */
-    const CR = 8, CH = 54, CN = 10;
+    const CR = 8, CH = 54, CN = 10, CAKE_BACK = 44;
     for (let i = 0; i < CN; i++) {
       const a = i * (360 / CN);
       const seg = document.createElement('div');
       seg.className = 'c-candle';
-      seg.style.transform =
-        `translate(-50%, -50%) translateY(${-TOP_Y - CH / 2}em) rotateY(${a}deg) translateZ(${CR}em)`;
+      seg.style.transform = `translate(-50%, -50%) translateY(${-TOP_Y - CH / 2}em) ` +
+        `translateZ(${-CAKE_BACK}em) rotateY(${a}deg) translateZ(${CR}em)`;
       parts.push(seg);
     }
 
     const flame = document.createElement('div');
     flame.className = 'c-flame';
-    flame.style.transform = `translate(-50%, -50%) translateY(${-TOP_Y - CH - 11}em)`;
+    flame.style.transform = `translate(-50%, -50%) translateY(${-TOP_Y - CH - 11}em) translateZ(${-CAKE_BACK}em)`;
     parts.push(flame);
 
-    /* имя по окружности: буквы стоят на боку торта */
-    const letters = [...NAME_ON_CAKE];
-    const spread = 15;
-    const start = -((letters.length - 1) / 2) * spread;
-    letters.forEach((ch, i) => {
-      /* Буква сидит во внешнем блоке: em внутри неё считались бы от её же кегля,
-         и translateZ уносил бы её на километры от торта. */
-      const el = document.createElement('div');
-      el.className = 'c-letter';
-      const glyph = document.createElement('span');
-      glyph.textContent = ch;
-      el.appendChild(glyph);
-      el.style.transform =
-        `translate(-50%, -50%) rotateY(${start + i * spread}deg) translateZ(${R + 1}em) translateY(6em)`;
-      parts.push(el);
-    });
+    /* имя пишем на верхней плоскости — как кремом на настоящем торте */
+    if (NAME_ON_CAKE) {
+      const name = document.createElement('span');
+      name.className = 'c-name';
+      name.textContent = NAME_ON_CAKE;
+      top.appendChild(name);
+    }
 
     orbit.append(...parts);
     return orbit;
@@ -444,13 +435,13 @@
   const orbit = buildCake();
 
   if (orbit) {
-    let angle = -34;      // стартовый разворот: имя видно не целиком
+    let angle = -12;      // лёгкий разворот, чтобы бок торта тоже читался
     let velocity = 0.05;  // сама медленно крутится, пока её не трогают
     let dragging = false;
     let lastX = 0;
     let touched = false;
 
-    const apply = () => { orbit.style.transform = `rotateX(14deg) rotateY(${angle}deg)`; };
+    const apply = () => { orbit.style.transform = `rotateX(-38deg) rotateY(${angle}deg)`; };
     apply();
 
     const spin = () => {

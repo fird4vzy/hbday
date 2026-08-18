@@ -19,71 +19,101 @@
 
 <canvas id="confetti"></canvas>
 
-<!-- Человечки на фоне: четыре фигуры, нарисованные по отдельности -->
+<!-- Человечки: четыре фигуры, нарисованные по отдельности -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
-    <g id="dood-base">
-      <path class="d-hat" d="M44 58 L70 6 L96 58 Z"/>
-      <path class="d-hat-band" d="M53 40 L87 40" />
-      <path class="d-hat-band" d="M48 50 L92 50" />
-      <path class="d-star" d="M70 0 l3.4 7 7.6 1-5.5 5.4 1.3 7.6L70 17.4 63.2 21l1.3-7.6L59 8l7.6-1z"/>
-      <circle class="d-fill" cx="70" cy="90" r="33"/>
-      <circle class="d-dot" cx="58" cy="86" r="4"/>
-      <circle class="d-dot" cx="82" cy="86" r="4"/>
-      <path class="d-line" d="M58 100 q12 11 24 0"/>
-      <path class="d-line" d="M70 123 v38"/>
-      <path class="d-line" d="M70 161 l-16 27"/>
-      <path class="d-line" d="M70 161 l16 27"/>
-    </g>
+<clipPath id="hatClip"><path d="M60 48 L98 -10 L126 42 Z"/></clipPath>
 
-    <symbol id="dood-cake" viewBox="0 0 140 200">
-      <use href="#dood-base"/>
-      <path class="d-line" d="M70 132 q-20 6 -28 18"/>
-      <rect class="d-fill" x="14" y="150" width="44" height="24" rx="5"/>
-      <path class="d-line" d="M14 160 q11 8 22 0 q11 8 22 0"/>
-      <path class="d-line" d="M36 150 v-12"/>
-      <path class="d-flame" d="M36 138 q6 -5 0 -12 q-6 7 0 12z"/>
-    </symbol>
-
-    <symbol id="dood-balloon" viewBox="0 0 140 200">
-      <use href="#dood-base"/>
-      <path class="d-line" d="M70 132 q-22 -2 -30 -16"/>
-      <path class="d-line" d="M40 116 q-8 -16 -6 -30"/>
-      <ellipse class="d-balloon" cx="32" cy="66" rx="22" ry="26"/>
-      <path class="d-line" d="M32 92 l-4 6 8 0 -4 -6z"/>
-    </symbol>
-
-    <symbol id="dood-sign" viewBox="0 0 140 200">
-      <use href="#dood-base"/>
-      <path class="d-line" d="M70 130 q-26 4 -34 16"/>
-      <path class="d-line" d="M70 130 q26 4 34 16"/>
-      <rect class="d-fill" x="18" y="142" width="104" height="40" rx="6"/>
-      <text class="d-text" x="70" y="169" text-anchor="middle">Чарос</text>
-    </symbol>
-
-    <symbol id="dood-party" viewBox="0 0 140 200">
-      <use href="#dood-base"/>
-      <path class="d-line" d="M70 132 q-24 -4 -32 -20"/>
-      <path class="d-line" d="M70 132 q24 -4 32 -20"/>
-      <g class="d-confetti">
-        <rect x="18" y="92" width="8" height="8" rx="2" transform="rotate(20 22 96)"/>
-        <rect x="112" y="98" width="8" height="8" rx="2" transform="rotate(-24 116 102)"/>
-        <rect x="30" y="60" width="7" height="7" rx="2" transform="rotate(35 33 63)"/>
-        <rect x="104" y="66" width="7" height="7" rx="2" transform="rotate(-14 107 69)"/>
-        <circle cx="14" cy="120" r="4"/>
-        <circle cx="126" cy="126" r="4"/>
+  <g id="dood-base">
+    <!-- туловище и голова одной каплей -->
+    <path class="d-fill" d="M34 100
+      C 20 96, 20 80, 30 68
+      C 44 50, 64 42, 88 42
+      C 118 42, 132 64, 132 96
+      L 132 150
+      C 132 163, 123 170, 110 170
+      L 64 170
+      C 46 170, 34 156, 34 138 Z"/>
+    <!-- колпак -->
+    <g>
+      <path class="d-fill" d="M60 48 L98 -10 L126 42 Z"/>
+      <g clip-path="url(#hatClip)">
+        <rect class="s1" x="50" y="30" width="90" height="12" transform="rotate(-16 95 36)"/>
+        <rect class="s2" x="50" y="14" width="90" height="12" transform="rotate(-16 95 20)"/>
+        <rect class="s3" x="50" y="-2" width="90" height="12" transform="rotate(-16 95 4)"/>
+        <rect class="s4" x="50" y="-18" width="90" height="12" transform="rotate(-16 95 -12)"/>
       </g>
+      <path class="d-fill" style="fill:none" d="M60 48 L98 -10 L126 42 Z"/>
+      <path class="d-star" transform="translate(98 -14) scale(1.1)"
+            d="M0 -11 L3.2 -3.6 L11 -3.4 L4.8 1.6 L7 9.4 L0 4.8 L-7 9.4 L-4.8 1.6 L-11 -3.4 L-3.2 -3.6 Z"/>
+    </g>
+    <!-- лицо -->
+    <circle class="d-dot" cx="62" cy="92" r="4.5"/>
+    <circle class="d-dot" cx="94" cy="92" r="4.5"/>
+    <path class="d-line" d="M52 104 C 66 128, 96 128, 110 100"/>
+    <!-- ноги -->
+    <path class="d-line" d="M68 170 L68 192"/>
+    <path class="d-line" d="M104 170 L104 192"/>
+  </g>
+
+    <symbol id="dood-cake" viewBox="0 0 254 252">
+      <g transform="translate(58 40)">
+      <use href="#dood-base"/>
+      <path class="d-line" d="M36 124 C 14 134, -6 142, -18 148"/>
+      <rect class="d-fill" x="-46" y="150" width="52" height="26" rx="4"/>
+      <path class="d-thin" d="M-46 160 q13 8 26 0 q13 8 26 0"/>
+      <path class="d-line" d="M-20 150 v-14"/>
+      <path class="d-flame" d="M-20 136 q6 -5 0 -13 q-6 8 0 13z"/>
+    </g>
+    </symbol>
+
+    <symbol id="dood-balloon" viewBox="0 0 254 252">
+      <g transform="translate(58 40)">
+      <use href="#dood-base"/>
+      <path class="d-line" d="M36 120 C 16 116, 0 108, -8 96"/>
+      <path class="d-thin" d="M-10 94 C -20 76, -22 56, -18 42"/>
+      <ellipse class="d-balloon" cx="-20" cy="12" rx="24" ry="29"/>
+      <path class="d-line" d="M-20 41 l-6 8 12 0 -6 -8z"/>
+    </g>
+    </symbol>
+
+    <symbol id="dood-sign" viewBox="0 0 254 252">
+      <g transform="translate(58 40)">
+      <use href="#dood-base"/>
+      <path class="d-line" d="M36 126 C 22 138, 16 150, 16 158"/>
+      <path class="d-line" d="M130 126 C 144 138, 150 150, 150 158"/>
+      <rect class="d-fill" x="-2" y="152" width="170" height="44" rx="5"/>
+      <text x="83" y="181" text-anchor="middle" font-family="'Caveat','Segoe Script',cursive"
+            font-size="24" font-weight="700" fill="#2a2140">Happy Birthday</text>
+    </g>
+    </symbol>
+
+    <symbol id="dood-party" viewBox="0 0 254 252">
+      <g transform="translate(58 40)">
+      <use href="#dood-base"/>
+      <path class="d-line" d="M36 122 C 16 114, 2 100, -4 84"/>
+      <path class="d-line" d="M130 122 C 150 114, 164 100, 170 84"/>
+      <g class="d-conf">
+        <rect x="-30" y="52" width="10" height="10" rx="2" transform="rotate(20 -25 57)" fill="#ff6ea9"/>
+        <rect x="176" y="58" width="10" height="10" rx="2" transform="rotate(-24 181 63)" fill="#5ad1a5"/>
+        <rect x="-16" y="16" width="9" height="9" rx="2" transform="rotate(35 -11 20)" fill="#7cc0ff"/>
+        <circle cx="184" cy="24" r="5" fill="#ffd23f"/>
+        <circle cx="-38" cy="108" r="5" fill="#ff6ea9"/>
+      </g>
+      <path class="d-heart" transform="translate(168 4) scale(1.7)"
+            d="M0 8 C -8 2, -8 -6, -3 -6 C -1 -6, 0 -4.5, 0 -3.5 C 0 -4.5, 1 -6, 3 -6 C 8 -6, 8 2, 0 8 Z"/>
+    </g>
     </symbol>
   </defs>
 </svg>
 
 <div class="doodles" aria-hidden="true">
-  <svg class="doodle d1" viewBox="0 0 140 200"><use href="#dood-cake"/></svg>
-  <svg class="doodle d2" viewBox="0 0 140 200"><use href="#dood-balloon"/></svg>
-  <svg class="doodle d3" viewBox="0 0 140 200"><use href="#dood-sign"/></svg>
-  <svg class="doodle d4" viewBox="0 0 140 200"><use href="#dood-party"/></svg>
-  <svg class="doodle d5" viewBox="0 0 140 200"><use href="#dood-balloon"/></svg>
-  <svg class="doodle d6" viewBox="0 0 140 200"><use href="#dood-cake"/></svg>
+  <svg class="doodle d1" viewBox="0 0 254 252"><use href="#dood-cake"/></svg>
+  <svg class="doodle d2" viewBox="0 0 254 252"><use href="#dood-balloon"/></svg>
+  <svg class="doodle d3" viewBox="0 0 254 252"><use href="#dood-sign"/></svg>
+  <svg class="doodle d4" viewBox="0 0 254 252"><use href="#dood-party"/></svg>
+  <svg class="doodle d5" viewBox="0 0 254 252"><use href="#dood-balloon"/></svg>
+  <svg class="doodle d6" viewBox="0 0 254 252"><use href="#dood-cake"/></svg>
 </div>
 
 
@@ -167,7 +197,11 @@
     </article>
 
     <article class="slide" data-slide="finale">
-      <div class="finale-emoji" aria-hidden="true">🥳</div>
+      <div class="finale-crew" aria-hidden="true">
+        <svg viewBox="0 0 254 252"><use href="#dood-cake"/></svg>
+        <svg viewBox="0 0 254 252"><use href="#dood-sign"/></svg>
+        <svg viewBox="0 0 254 252"><use href="#dood-party"/></svg>
+      </div>
       <h2 class="finale-title" id="finaleTitle">Ещё раз — с днём рождения!</h2>
       <p class="finale-text" id="finaleText">Пусть этот год будет твоим лучшим.</p>
       <button class="btn" id="replayBtn">Посмотреть заново <span aria-hidden="true">✨</span></button>
