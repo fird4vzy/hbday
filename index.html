@@ -24,22 +24,38 @@
 
 <!-- 1. Подарок. Первый тап нужен и для драматургии, и чтобы браузер разрешил звук -->
 <section class="screen screen-gift" id="screenGift">
-  <div class="giftbox" id="giftbox" role="button" tabindex="0" aria-label="Открыть подарок">
-    <div class="ribbon-v"></div>
-    <div class="ribbon-h"></div>
-    <svg class="bow" viewBox="0 0 200 112" aria-hidden="true">
-      <defs>
-        <linearGradient id="bowFill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#ff9dc4"/>
-          <stop offset="100%" stop-color="var(--accent)"/>
-        </linearGradient>
-      </defs>
-      <path class="bow-tail" d="M95 54 L70 108 L90 98 L100 62 Z"/>
-      <path class="bow-tail" d="M105 54 L130 108 L110 98 L100 62 Z"/>
-      <path class="bow-loop" d="M100 50 C66 8, 26 14, 20 40 C14 66, 60 76, 100 54 Z"/>
-      <path class="bow-loop" d="M100 50 C134 8, 174 14, 180 40 C186 66, 140 76, 100 54 Z"/>
-      <rect class="bow-knot" x="88" y="40" width="24" height="22" rx="6"/>
-    </svg>
+  <div class="gift-stage" id="giftbox" role="button" tabindex="0" aria-label="Открыть подарок">
+    <div class="gift-tilt" id="giftTilt">
+      <div class="gift-sway">
+        <div class="gift-body">
+          <div class="gface gf"></div>
+          <div class="gface gb"></div>
+          <div class="gface gl"></div>
+          <div class="gface gr"></div>
+        </div>
+        <div class="gift-lid">
+          <div class="gface lt"></div>
+          <div class="gface lf"></div>
+          <div class="gface lb"></div>
+          <div class="gface ll"></div>
+          <div class="gface lr"></div>
+          <svg class="bow" viewBox="0 0 200 112" aria-hidden="true">
+            <defs>
+              <linearGradient id="bowFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#ff9dc4"/>
+                <stop offset="100%" stop-color="var(--accent)"/>
+              </linearGradient>
+            </defs>
+            <path class="bow-tail" d="M95 54 L70 108 L90 98 L100 62 Z"/>
+            <path class="bow-tail" d="M105 54 L130 108 L110 98 L100 62 Z"/>
+            <path class="bow-loop" d="M100 50 C66 8, 26 14, 20 40 C14 66, 60 76, 100 54 Z"/>
+            <path class="bow-loop" d="M100 50 C134 8, 174 14, 180 40 C186 66, 140 76, 100 54 Z"/>
+            <rect class="bow-knot" x="88" y="40" width="24" height="22" rx="6"/>
+          </svg>
+        </div>
+        <div class="gift-shadow" aria-hidden="true"></div>
+      </div>
+    </div>
   </div>
   <p class="eyebrow dim">для</p>
   <h1 class="script-name gradient-text" id="giftTo">Чарос</h1>

@@ -169,68 +169,196 @@ body::before {
 }
 
 /* ============ 1. подарочная коробка ============ */
-.giftbox {
-  position: relative;
-  width: min(400px, 78vw);
-  aspect-ratio: 4 / 3;
-  border-radius: 10px;
+/* Настоящая 3D-модель на CSS-трансформациях: коробка из граней плюс объёмная крышка.
+   Все размеры в em, а масштаб задаёт font-size сцены — так коробка тянется под экран. */
+.gift-stage {
+  font-size: clamp(1px, 0.3vw, 1.6px);
+  width: 240em;
+  height: 250em;
+  perspective: 900em;
   cursor: pointer;
-  background:
-    radial-gradient(120% 120% at 20% 10%, rgba(255, 255, 255, 0.07), transparent 60%),
-    linear-gradient(150deg, color-mix(in srgb, var(--accent) 26%, #17131a), color-mix(in srgb, var(--warm) 22%, #171317));
-  box-shadow: var(--shadow), 0 0 90px color-mix(in srgb, var(--accent) 22%, transparent);
-  animation: float 3.4s ease-in-out infinite;
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* мелкий точечный узор «упаковочной бумаги» */
-.giftbox::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 10px;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.16) 1px, transparent 1.4px);
-  background-size: 26px 26px;
-  opacity: 0.5;
-}
-
-.ribbon-v, .ribbon-h {
-  position: absolute;
-  background: linear-gradient(90deg,
-    color-mix(in srgb, var(--accent) 70%, #000),
-    var(--accent) 45%, #ff9dc4 50%, var(--accent) 55%,
-    color-mix(in srgb, var(--accent) 70%, #000));
-  box-shadow: 0 0 26px color-mix(in srgb, var(--accent) 55%, transparent);
-}
-.ribbon-v { left: 50%; top: 0; bottom: 0; width: 17%; translate: -50% 0; }
-.ribbon-h {
-  left: 0; right: 0; top: 50%; height: 22%; translate: 0 -50%;
-  background: linear-gradient(180deg,
-    color-mix(in srgb, var(--accent) 70%, #000),
-    var(--accent) 45%, #ff9dc4 50%, var(--accent) 55%,
-    color-mix(in srgb, var(--accent) 70%, #000));
-}
-
-.bow {
+.gift-tilt,
+.gift-sway,
+.gift-body,
+.gift-lid {
   position: absolute;
   left: 50%;
   top: 50%;
-  translate: -50% -50%;
-  width: 54%;
-  z-index: 3;
+  transform-style: preserve-3d;
+}
+
+.gift-tilt {
+  width: 0;
+  height: 0;
+  transform: rotateX(14deg);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gift-sway {
+  width: 0;
+  height: 0;
+  animation: sway 7s ease-in-out infinite alternate, hover 3.6s ease-in-out infinite;
+}
+
+@keyframes sway {
+  from { rotate: y -26deg; }
+  to   { rotate: y 26deg; }
+}
+@keyframes hover {
+  0%, 100% { translate: 0 0; }
+  50%      { translate: 0 -10em; }
+}
+
+.gface {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.18) 1px, transparent 1.4px),
+    linear-gradient(155deg,
+      color-mix(in srgb, var(--accent) 52%, #1d0f18),
+      color-mix(in srgb, var(--accent) 30%, #170d14) 55%,
+      color-mix(in srgb, var(--warm) 22%, #1a1016));
+  background-size: 26em 26em, auto;
+  backface-visibility: hidden;
+}
+
+/* Лента: вертикальная полоса на каждой боковой грани. */
+.gift-body .gface::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 17%;
+  translate: -50% 0;
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--accent) 62%, #000),
+    var(--accent) 44%, #ffa8ca 50%, var(--accent) 56%,
+    color-mix(in srgb, var(--accent) 62%, #000));
+}
+
+/* корпус: 200 x 130, глубина 160 */
+.gf { width: 200em; height: 130em; transform: translate(-50%, -50%) translateZ(80em); }
+.gb { width: 200em; height: 130em; transform: translate(-50%, -50%) rotateY(180deg) translateZ(80em); }
+.gr { width: 160em; height: 130em; transform: translate(-50%, -50%) rotateY(90deg) translateZ(100em); }
+.gl { width: 160em; height: 130em; transform: translate(-50%, -50%) rotateY(-90deg) translateZ(100em); }
+.gr, .lr { filter: brightness(0.72); }
+.gl, .ll { filter: brightness(0.86); }
+.gb, .lb { filter: brightness(0.6); }
+
+/* крышка: 214 x 36, глубина 174, поднята над корпусом */
+.gift-lid {
+  width: 0;
+  height: 0;
+  transform: translateY(-83em);
+  transition: transform 0.75s cubic-bezier(0.5, -0.4, 0.4, 1.4), opacity 0.6s ease;
+}
+
+.lt {
+  width: 214em;
+  height: 174em;
+  transform-style: preserve-3d;
+  backface-visibility: visible;
+  transform: translate(-50%, -50%) rotateX(90deg) translateZ(18em);
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.2) 1px, transparent 1.4px),
+    linear-gradient(150deg,
+      color-mix(in srgb, var(--accent) 62%, #24121c),
+      color-mix(in srgb, var(--accent) 38%, #1c101a) 60%,
+      color-mix(in srgb, var(--warm) 26%, #1d1218));
+}
+.lf { width: 214em; height: 36em; transform: translate(-50%, -50%) translateZ(87em); }
+.lb { width: 214em; height: 36em; transform: translate(-50%, -50%) rotateY(180deg) translateZ(87em); }
+.lr { width: 174em; height: 36em; transform: translate(-50%, -50%) rotateY(90deg) translateZ(107em); }
+.ll { width: 174em; height: 36em; transform: translate(-50%, -50%) rotateY(-90deg) translateZ(107em); }
+
+/* лента на крышке идёт крестом */
+.gift-lid .lf::before,
+.gift-lid .lb::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 17%;
+  translate: -50% 0;
+  background: var(--accent);
+  box-shadow: 0 0 18em color-mix(in srgb, var(--accent) 60%, transparent);
+}
+.gift-lid .lr::before,
+.gift-lid .ll::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 21%;
+  translate: -50% 0;
+  background: var(--accent);
+  box-shadow: 0 0 18em color-mix(in srgb, var(--accent) 60%, transparent);
+}
+.lt::before,
+.lt::after {
+  content: '';
+  position: absolute;
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--accent) 58%, #000),
+    var(--accent) 44%, #ffa8ca 50%, var(--accent) 56%,
+    color-mix(in srgb, var(--accent) 58%, #000));
+  box-shadow: 0 0 22em color-mix(in srgb, var(--accent) 55%, transparent);
+}
+.lt::before { left: 50%; top: 0; bottom: 0; width: 17%; translate: -50% 0; }
+.lt::after  { top: 50%; left: 0; right: 0; height: 21%; translate: 0 -50%;
+              background: linear-gradient(180deg,
+                color-mix(in srgb, var(--accent) 58%, #000),
+                var(--accent) 44%, #ffa8ca 50%, var(--accent) 56%,
+                color-mix(in srgb, var(--accent) 58%, #000)); }
+
+/* Бант стоит на крышке: он живёт в системе координат самой крышки, а не её грани. */
+.gift-lid .bow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 124em;
+  height: auto;
   overflow: visible;
-  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.45));
+  translate: -50% -50%;
+  transform: translateY(-54em);
+  filter: drop-shadow(0 4em 10em rgba(0, 0, 0, 0.55))
+          drop-shadow(0 0 16em color-mix(in srgb, var(--accent) 55%, transparent));
 }
 .bow-loop { fill: url(#bowFill); }
 .bow-tail { fill: color-mix(in srgb, var(--accent) 82%, #000); }
 .bow-knot { fill: url(#bowFill); }
 
-.giftbox:hover { transform: scale(1.02); }
-.giftbox.is-opening { animation: none; transform: scale(1.5); opacity: 0; }
+/* мягкая тень под коробкой, лежит на «полу» */
+.gift-shadow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 230em;
+  height: 170em;
+  transform: translate(-50%, -50%) rotateX(90deg) translateZ(-72em);
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.6), transparent);
+  filter: blur(6em);
+}
 
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-12px); }
+.gift-stage:hover .gift-tilt { transform: rotateX(22deg); }
+
+/* открытие: крышка взлетает и уходит, коробка растворяется */
+.gift-stage.is-opening .gift-lid {
+  transform: translateY(-260em) rotateZ(24deg) rotateX(30deg);
+  opacity: 0;
+}
+.gift-stage.is-opening .gift-sway { animation: none; }
+.gift-stage.is-opening {
+  transition: opacity 0.5s ease 0.25s, scale 0.6s ease 0.2s;
+  opacity: 0;
+  scale: 1.25;
 }
 
 /* ============ 2. слайды ============ */
@@ -613,8 +741,7 @@ body::before {
 /* Низкие экраны в альбомной ориентации: убираем лишний вертикальный воздух. */
 @media (max-height: 520px) and (orientation: landscape) {
   .screen { padding-top: calc(64px + env(safe-area-inset-top)); gap: 10px; }
-  .giftbox { width: min(280px, 46vw); }
-  .cake { width: 120px; }
+    .cake { width: 120px; }
   .finale-emoji { font-size: 54px; }
 }
 

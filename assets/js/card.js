@@ -340,6 +340,18 @@
   }
 
   const box = $('giftbox');
+  const giftTilt = $('giftTilt');
+
+  if (!reduced && matchMedia('(hover: hover)').matches) {
+    box.addEventListener('pointermove', (e) => {
+      const r = box.getBoundingClientRect();
+      const dx = (e.clientX - r.left) / r.width - 0.5;
+      const dy = (e.clientY - r.top) / r.height - 0.5;
+      giftTilt.style.transform = `rotateX(${14 + dy * 16}deg) rotateY(${dx * 24}deg)`;
+    });
+    box.addEventListener('pointerleave', () => { giftTilt.style.transform = ''; });
+  }
+
   box.addEventListener('click', openGift);
   box.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openGift(); }
