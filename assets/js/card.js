@@ -56,9 +56,10 @@
   /* ---------- пасхалка: тап по фону рассыпает фонтан ---------- */
   let tapBits = [];
 
-  function spawnBurst(x, y) {
+  function spawnBurst(x, y, chars, count) {
     if (reduced || tapBits.length > 90) return;
-    const count = 14;
+    const set = chars || BURST_EMOJI;
+    count = count || 14;
     for (let i = 0; i < count; i++) {
       const angle = -Math.PI / 2 + (Math.random() - 0.5) * 2.4;
       const speed = 220 + Math.random() * 320;
@@ -70,7 +71,7 @@
         angle: (Math.random() - 0.5) * 0.8,
         spin: (Math.random() - 0.5) * 6,
         life: 1,
-        char: BURST_EMOJI[(Math.random() * BURST_EMOJI.length) | 0]
+        char: set[(Math.random() * set.length) | 0]
       });
     }
   }
@@ -230,6 +231,74 @@
   const timers = [];
   let letterPlayed = false;
   let letterDone = false;
+  let wishRunning = false;
+  let wishOver = false;
+
+  /* ---------- «загадай желание и задуй свечку» ---------- */
+  function blowOutCandle() {
+    if (flame) flame.classList.add('is-out');
+    const stage = $('cake3d');
+    if (!stage || reduced) return;
+    for (let i = 0; i < 3; i++) {
+      const puff = document.createElement('span');
+      puff.className = 'smoke';
+      stage.appendChild(puff);
+      timers.push(setTimeout(() => puff.remove(), 3000));
+    }
+  }
+
+  function endWish(next) {
+    if (wishOver) return;
+    wishOver = true;
+    timers.splice(0).forEach(clearTimeout);
+
+    blowOutCandle();
+    $('wishDim').classList.add('is-out');
+    const stage = $('cake3d');
+    if (stage) {
+      const r = stage.getBoundingClientRect();
+      spawnBurst(r.left + r.width / 2, r.top + r.height * 0.45, ['✨', '⭐️', '💫'], 18);
+    }
+    $('wishPrompt').hidden = true;
+    $('wishCount').hidden = true;
+    $('wishHint').hidden = true;
+    $('wishDone').hidden = false;
+
+    timers.push(setTimeout(() => {
+      $('wishDim').classList.remove('is-on');
+      $('wish').classList.add('is-fading');
+      timers.push(setTimeout(() => {
+        $('wish').hidden = true;
+        $('screenDeck').classList.remove('is-wishing');
+        wishRunning = false;
+        next();
+      }, 650));
+    }, 2000));
+  }
+
+  function runWish(next) {
+    const count = $('wishCount');
+    wishRunning = true;
+    $('wish').hidden = false;
+    $('screenDeck').classList.add('is-wishing');
+    requestAnimationFrame(() => $('wishDim').classList.add('is-on'));
+
+    let n = 10;
+    count.textContent = n;
+    const tick = () => {
+      n -= 1;
+      if (n >= 1) {
+        count.textContent = n;
+        count.classList.remove('is-beat');
+        void count.offsetWidth;   // перезапуск анимации на новом числе
+        count.classList.add('is-beat');
+        timers.push(setTimeout(tick, 850));
+      } else {
+        endWish(next);
+      }
+    };
+    timers.push(setTimeout(tick, 900));
+  }
 
   function finishLetter() {
     timers.splice(0).forEach(clearTimeout);
@@ -246,8 +315,11 @@
   function playLetter() {
     if (letterPlayed) return;
     letterPlayed = true;
-    if (reduced) { finishLetter(); return; }
+    if (reduced) { endWish(finishLetter); return; }
+    runWish(typeLetter);
+  }
 
+  function typeLetter() {
     const title = card.letterTitle || '';
     const titleEl = $('letterTitleText');
     let i = 0;
@@ -273,7 +345,8 @@
   }
 
   document.querySelector('[data-slide="letter"]').addEventListener('click', (e) => {
-    if (letterPlayed && !letterDone && !e.target.closest('button')) finishLetter();
+    if (wishRunning || e.target.closest('button')) return;
+    if (letterPlayed && !letterDone) finishLetter();
   });
 
   /* ---------- навигация по слайдам ---------- */
@@ -363,14 +436,34 @@
     showScreen('gift');
   });
 
+  function resetLetter() {
+    timers.splice(0).forEach(clearTimeout);
+    letterPlayed = letterDone = wishRunning = wishOver = false;
+    if (flame) flame.classList.remove('is-out');
+    $('letterTitleText').textContent = '';
+    $('caret').classList.remove('is-done');
+    $('letterIntro').textContent = '';
+    $('letterClosing').textContent = '';
+    $('letterClosing').classList.remove('is-shown');
+    [...wishesEl.children].forEach((li) => li.classList.remove('is-shown'));
+    $('skipHint').hidden = false;
+    $('wishPrompt').hidden = $('wishCount').hidden = $('wishHint').hidden = false;
+    $('wishDone').hidden = true;
+    $('wish').classList.remove('is-fading');
+    $('wishDim').classList.remove('is-on', 'is-out');
+  }
+
   $('replayBtn').addEventListener('click', () => {
     opened = false;
     box.classList.remove('is-opening');
+    resetLetter();
     showScreen('gift');
   });
 
   /* ---------- торт: 3D-модель, которую можно крутить ---------- */
   const NAME_ON_CAKE = (card.to || '').trim();
+
+  let flame = null;
 
   function buildCake() {
     const orbit = $('cakeOrbit');
@@ -415,7 +508,7 @@
       parts.push(seg);
     }
 
-    const flame = document.createElement('div');
+    flame = document.createElement('div');
     flame.className = 'c-flame';
     flame.style.transform = `translate(-50%, -50%) translateY(${-TOP_Y - CH - 11}em) translateZ(${-CAKE_BACK}em)`;
     parts.push(flame);
@@ -456,9 +549,11 @@
     if (!reduced) requestAnimationFrame(spin);
 
     const stage = $('cake3d');
+    let downX = 0;
     stage.addEventListener('pointerdown', (e) => {
       dragging = true;
       lastX = e.clientX;
+      downX = e.clientX;
       stage.setPointerCapture(e.pointerId);
       if (!touched) { touched = true; $('cakeHint').classList.add('is-hidden'); }
     });
@@ -474,6 +569,8 @@
       if (!dragging) return;
       dragging = false;
       if (stage.hasPointerCapture(e.pointerId)) stage.releasePointerCapture(e.pointerId);
+      /* короткий тап во время отсчёта = задуть свечку сразу */
+      if (wishRunning && !wishOver && Math.abs(e.clientX - downX) < 8) endWish(typeLetter);
     };
     stage.addEventListener('pointerup', endDrag);
     stage.addEventListener('pointercancel', endDrag);

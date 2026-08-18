@@ -183,6 +183,12 @@
         <div class="cake-orbit" id="cakeOrbit"></div>
       </div>
       <p class="cake-hint" id="cakeHint">покрути торт 👆</p>
+      <div class="wish" id="wish" hidden>
+        <p class="wish-prompt" id="wishPrompt">Загадай желание<br><span>и задуй свечку</span></p>
+        <p class="wish-count" id="wishCount">10</p>
+        <p class="wish-hint" id="wishHint">или нажми на торт, чтобы задуть</p>
+        <p class="wish-done" id="wishDone" hidden>Желание принято ✨</p>
+      </div>
       <h2 class="letter-title"><span id="letterTitleText"></span><span class="caret" id="caret" aria-hidden="true"></span></h2>
       <div class="letter-body">
         <p class="letter-intro" id="letterIntro"></p>
@@ -204,6 +210,8 @@
       <button class="btn" id="replayBtn">Посмотреть заново <span aria-hidden="true">✨</span></button>
     </article>
   </div>
+
+  <div class="wish-dim" id="wishDim" aria-hidden="true"></div>
 
   <button class="nav-btn" data-dir="prev" aria-label="Назад">‹</button>
   <button class="nav-btn" data-dir="next" aria-label="Вперёд">›</button>
