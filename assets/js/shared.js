@@ -27,14 +27,14 @@ const DEFAULT_CARD = {
 };
 
 const THEMES = {
-  party:  { label: 'Праздник', bg: '#17171d', accent: '#ff2e7e', warm: '#ffb347', glow: '#7b2ff7' },
-  gold:   { label: 'Золото',   bg: '#16130d', accent: '#ffc233', warm: '#ff8a3d', glow: '#b06f00' },
-  neon:   { label: 'Неон',     bg: '#0c1018', accent: '#22d3ee', warm: '#a78bfa', glow: '#2563eb' },
-  mint:   { label: 'Мята',     bg: '#0b1512', accent: '#4ade80', warm: '#facc15', glow: '#0d9488' },
-  candy:  { label: 'Карамель', bg: '#1a1016', accent: '#fb7185', warm: '#fcd34d', glow: '#c026d3' }
+  party:  { label: 'Праздник', bg: '#fff6ec', accent: '#ff3d8b', warm: '#ffb020', glow: '#7b5cff' },
+  lemon:  { label: 'Лимон',    bg: '#fffdf0', accent: '#ff8a00', warm: '#ffd23f', glow: '#34c759' },
+  mint:   { label: 'Мята',     bg: '#effcf5', accent: '#12b886', warm: '#ffd43b', glow: '#4dabf7' },
+  sky:    { label: 'Небо',     bg: '#f0f7ff', accent: '#4c6ef5', warm: '#ff922b', glow: '#22b8cf' },
+  candy:  { label: 'Карамель', bg: '#fff0f6', accent: '#e64980', warm: '#ff922b', glow: '#cc5de8' }
 };
 
-const CONFETTI_COLORS = ['#ff2e7e', '#ffb347', '#7b2ff7', '#22d3ee', '#4ade80', '#f8fafc'];
+const CONFETTI_COLORS = ['#ff3d8b', '#ffb020', '#7b5cff', '#22b8cf', '#34c759', '#ff6b35'];
 
 /* Пасхалка: что вылетает из точки нажатия. */
 const BURST_EMOJI = ['🍊', '💸', '🎂', '💰', '🎉', '✨', '🍊', '💸'];

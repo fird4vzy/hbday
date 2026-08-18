@@ -1,17 +1,18 @@
 /* ============ токены ============ */
 :root {
-  --bg: #17171d;
-  --accent: #ff2e7e;
-  --warm: #ffb347;
-  --glow: #7b2ff7;
-  --text: #f6f4f8;
-  --muted: rgba(246, 244, 248, 0.6);
-  --line: rgba(255, 255, 255, 0.12);
-  --panel: rgba(255, 255, 255, 0.05);
+  --bg: #fff6ec;
+  --accent: #ff3d8b;
+  --warm: #ffb020;
+  --glow: #7b5cff;
+  --text: #2a2140;
+  --muted: rgba(42, 33, 64, 0.62);
+  --line: rgba(42, 33, 64, 0.16);
+  --panel: #ffffff;
+  --ink-soft: rgba(42, 33, 64, 0.06);
   --script: 'Caveat', 'Segoe Script', cursive;
   --display: 'Playfair Display', Georgia, 'Times New Roman', serif;
   --sans: 'Manrope', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --shadow: 0 22px 60px rgba(0, 0, 0, 0.5);
+  --shadow: 0 18px 44px rgba(42, 33, 64, 0.14);
 }
 
 * { box-sizing: border-box; }
@@ -41,10 +42,10 @@ body::before {
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(34vmax 34vmax at 18% 22%, color-mix(in srgb, var(--glow) 34%, transparent), transparent 70%),
-    radial-gradient(40vmax 40vmax at 84% 76%, color-mix(in srgb, var(--accent) 26%, transparent), transparent 72%),
-    radial-gradient(30vmax 30vmax at 70% 12%, color-mix(in srgb, var(--warm) 16%, transparent), transparent 70%);
-  filter: blur(24px);
+    radial-gradient(34vmax 34vmax at 16% 20%, color-mix(in srgb, var(--glow) 16%, transparent), transparent 70%),
+    radial-gradient(40vmax 40vmax at 86% 78%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 72%),
+    radial-gradient(30vmax 30vmax at 72% 10%, color-mix(in srgb, var(--warm) 20%, transparent), transparent 70%);
+  filter: blur(26px);
   animation: drift 26s ease-in-out infinite alternate;
 }
 
@@ -58,6 +59,68 @@ body::before {
   inset: 0;
   z-index: 1;
   pointer-events: none;
+}
+
+/* ============ человечки на фоне ============ */
+.doodles {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.doodle {
+  position: absolute;
+  width: 120px;
+  height: auto;
+  opacity: 0.55;
+  animation: bob 5s ease-in-out infinite;
+}
+
+@keyframes bob {
+  0%, 100% { translate: 0 0; }
+  50%      { translate: 0 -10px; }
+}
+
+/* общие штрихи фигур */
+.d-fill    { fill: #fff; stroke: var(--text); stroke-width: 5; }
+.d-line    { fill: none; stroke: var(--text); stroke-width: 5; stroke-linecap: round; }
+.d-dot     { fill: var(--text); }
+.d-hat     { fill: var(--accent); stroke: var(--text); stroke-width: 5; stroke-linejoin: round; }
+.d-hat-band{ fill: none; stroke: var(--warm); stroke-width: 6; stroke-linecap: round; }
+.d-star    { fill: var(--warm); stroke: var(--text); stroke-width: 3; stroke-linejoin: round; }
+.d-flame   { fill: var(--warm); stroke: var(--text); stroke-width: 3; }
+.d-balloon { fill: var(--glow); stroke: var(--text); stroke-width: 5; }
+.d-confetti rect, .d-confetti circle { fill: var(--accent); }
+.d-confetti rect:nth-child(even) { fill: var(--glow); }
+.d-text {
+  font-family: var(--script);
+  font-size: 30px;
+  font-weight: 700;
+  fill: var(--accent);
+}
+
+/* Раскладка: фигуры стоят по краям, чтобы не лезть в текст. */
+.d1 { left: 3%;  bottom: 6%;  width: 132px; animation-delay: -0.4s; rotate: -4deg; }
+.d2 { right: 4%; top: 12%;    width: 118px; animation-delay: -1.6s; rotate: 5deg; }
+.d3 { right: 6%; bottom: 7%;  width: 150px; animation-delay: -2.6s; rotate: 3deg; }
+.d4 { left: 6%;  top: 10%;    width: 112px; animation-delay: -3.4s; rotate: -6deg; }
+.d5 { left: 21%; bottom: 2%;  width: 92px;  animation-delay: -2s;   rotate: 4deg; opacity: 0.32; }
+.d6 { right: 22%; top: 3%;    width: 88px;  animation-delay: -1s;   rotate: -3deg; opacity: 0.32; }
+
+@media (max-width: 1100px) {
+  .d5, .d6 { display: none; }
+  .doodle { width: 104px; opacity: 0.45; }
+  .d3 { width: 120px; }
+}
+
+@media (max-width: 720px) {
+  .d1 { left: -2%;  bottom: 3%;  width: 96px; }
+  .d2 { right: -2%; top: 6%;     width: 88px; }
+  .d3 { display: none; }
+  .d4 { left: -3%;  top: 4%;     width: 84px; opacity: 0.3; }
+  .doodle { opacity: 0.38; }
 }
 
 /* ============ общие элементы ============ */
@@ -145,16 +208,15 @@ body::before {
   padding: 11px 20px;
   border-radius: 999px;
   border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--panel);
   color: var(--text);
   font: inherit;
   font-weight: 600;
   font-size: 14px;
   cursor: pointer;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 6px 16px rgba(42, 33, 64, 0.1);
 }
-.ghost-btn:hover { background: rgba(255, 255, 255, 0.11); }
+.ghost-btn:hover { background: #fff; transform: translateY(-1px); }
 
 :where(button, a, [tabindex]):focus-visible {
   outline: 2px solid var(--warm);
@@ -217,11 +279,11 @@ body::before {
   left: 50%;
   top: 50%;
   background-image:
-    radial-gradient(rgba(255, 255, 255, 0.18) 1px, transparent 1.4px),
+    radial-gradient(rgba(255, 255, 255, 0.65) 1.4px, transparent 1.8px),
     linear-gradient(155deg,
-      color-mix(in srgb, var(--accent) 52%, #1d0f18),
-      color-mix(in srgb, var(--accent) 30%, #170d14) 55%,
-      color-mix(in srgb, var(--warm) 22%, #1a1016));
+      color-mix(in srgb, var(--accent) 92%, #fff),
+      var(--accent) 55%,
+      color-mix(in srgb, var(--accent) 78%, var(--glow)));
   background-size: 26em 26em, auto;
   backface-visibility: hidden;
 }
@@ -236,9 +298,9 @@ body::before {
   width: 17%;
   translate: -50% 0;
   background: linear-gradient(90deg,
-    color-mix(in srgb, var(--accent) 62%, #000),
-    var(--accent) 44%, #ffa8ca 50%, var(--accent) 56%,
-    color-mix(in srgb, var(--accent) 62%, #000));
+    color-mix(in srgb, var(--warm) 78%, #c06a00),
+    var(--warm) 42%, #fff0c2 50%, var(--warm) 58%,
+    color-mix(in srgb, var(--warm) 78%, #c06a00));
 }
 
 /* корпус: 200 x 130, глубина 160 */
@@ -246,9 +308,9 @@ body::before {
 .gb { width: 200em; height: 130em; transform: translate(-50%, -50%) rotateY(180deg) translateZ(80em); }
 .gr { width: 160em; height: 130em; transform: translate(-50%, -50%) rotateY(90deg) translateZ(100em); }
 .gl { width: 160em; height: 130em; transform: translate(-50%, -50%) rotateY(-90deg) translateZ(100em); }
-.gr, .lr { filter: brightness(0.72); }
-.gl, .ll { filter: brightness(0.86); }
-.gb, .lb { filter: brightness(0.6); }
+.gr, .lr { filter: brightness(0.84) saturate(1.05); }
+.gl, .ll { filter: brightness(0.94); }
+.gb, .lb { filter: brightness(0.78); }
 
 /* крышка: 214 x 36, глубина 174, поднята над корпусом */
 .gift-lid {
@@ -265,11 +327,11 @@ body::before {
   backface-visibility: visible;
   transform: translate(-50%, -50%) rotateX(90deg) translateZ(18em);
   background-image:
-    radial-gradient(rgba(255, 255, 255, 0.2) 1px, transparent 1.4px),
+    radial-gradient(rgba(255, 255, 255, 0.7) 1.4px, transparent 1.8px),
     linear-gradient(150deg,
-      color-mix(in srgb, var(--accent) 62%, #24121c),
-      color-mix(in srgb, var(--accent) 38%, #1c101a) 60%,
-      color-mix(in srgb, var(--warm) 26%, #1d1218));
+      color-mix(in srgb, var(--accent) 84%, #fff),
+      var(--accent) 60%,
+      color-mix(in srgb, var(--accent) 82%, var(--glow)));
 }
 .lf { width: 214em; height: 36em; transform: translate(-50%, -50%) translateZ(87em); }
 .lb { width: 214em; height: 36em; transform: translate(-50%, -50%) rotateY(180deg) translateZ(87em); }
@@ -286,8 +348,7 @@ body::before {
   bottom: 0;
   width: 17%;
   translate: -50% 0;
-  background: var(--accent);
-  box-shadow: 0 0 18em color-mix(in srgb, var(--accent) 60%, transparent);
+  background: var(--warm);
 }
 .gift-lid .lr::before,
 .gift-lid .ll::before {
@@ -298,25 +359,23 @@ body::before {
   bottom: 0;
   width: 21%;
   translate: -50% 0;
-  background: var(--accent);
-  box-shadow: 0 0 18em color-mix(in srgb, var(--accent) 60%, transparent);
+  background: var(--warm);
 }
 .lt::before,
 .lt::after {
   content: '';
   position: absolute;
   background: linear-gradient(90deg,
-    color-mix(in srgb, var(--accent) 58%, #000),
-    var(--accent) 44%, #ffa8ca 50%, var(--accent) 56%,
-    color-mix(in srgb, var(--accent) 58%, #000));
-  box-shadow: 0 0 22em color-mix(in srgb, var(--accent) 55%, transparent);
+    color-mix(in srgb, var(--warm) 78%, #c06a00),
+    var(--warm) 42%, #fff0c2 50%, var(--warm) 58%,
+    color-mix(in srgb, var(--warm) 78%, #c06a00));
 }
 .lt::before { left: 50%; top: 0; bottom: 0; width: 17%; translate: -50% 0; }
 .lt::after  { top: 50%; left: 0; right: 0; height: 21%; translate: 0 -50%;
               background: linear-gradient(180deg,
-                color-mix(in srgb, var(--accent) 58%, #000),
-                var(--accent) 44%, #ffa8ca 50%, var(--accent) 56%,
-                color-mix(in srgb, var(--accent) 58%, #000)); }
+                color-mix(in srgb, var(--warm) 78%, #c06a00),
+                var(--warm) 42%, #fff0c2 50%, var(--warm) 58%,
+                color-mix(in srgb, var(--warm) 78%, #c06a00)); }
 
 /* Бант стоит на крышке: он живёт в системе координат самой крышки, а не её грани. */
 .gift-lid .bow {
@@ -328,11 +387,10 @@ body::before {
   overflow: visible;
   translate: -50% -50%;
   transform: translateY(-54em);
-  filter: drop-shadow(0 4em 10em rgba(0, 0, 0, 0.55))
-          drop-shadow(0 0 16em color-mix(in srgb, var(--accent) 55%, transparent));
+  filter: drop-shadow(0 4em 8em rgba(42, 33, 64, 0.3));
 }
 .bow-loop { fill: url(#bowFill); }
-.bow-tail { fill: color-mix(in srgb, var(--accent) 82%, #000); }
+.bow-tail { fill: color-mix(in srgb, var(--warm) 72%, #b35c00); }
 .bow-knot { fill: url(#bowFill); }
 
 /* мягкая тень под коробкой, лежит на «полу» */
@@ -343,7 +401,7 @@ body::before {
   width: 230em;
   height: 170em;
   transform: translate(-50%, -50%) rotateX(90deg) translateZ(-72em);
-  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.6), transparent);
+  background: radial-gradient(closest-side, rgba(42, 33, 64, 0.24), transparent);
   filter: blur(6em);
 }
 
@@ -380,7 +438,7 @@ body::before {
   padding: 0;
   border-radius: 50%;
   border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--ink-soft);
   cursor: pointer;
   transition: background 0.3s, box-shadow 0.3s;
 }
@@ -421,13 +479,12 @@ body::before {
   height: 52px;
   border-radius: 50%;
   border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--panel);
   color: var(--text);
   font-size: 22px;
   line-height: 1;
   cursor: pointer;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 8px 20px rgba(42, 33, 64, 0.12);
 }
 .nav-btn[data-dir="prev"] { left: calc(18px + env(safe-area-inset-left)); }
 .nav-btn[data-dir="next"] { right: calc(18px + env(safe-area-inset-right)); }
@@ -451,7 +508,7 @@ body::before {
   width: min(560px, 88vw);
   aspect-ratio: 2 / 1;
   border-radius: 50%;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--warm) 26%, transparent), transparent);
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--warm) 30%, transparent), transparent);
   filter: blur(10px);
   pointer-events: none;
   z-index: -1;
@@ -462,31 +519,116 @@ body::before {
 .card-actions { margin-top: 30px; }
 
 /* — слайд 2: письмо с пожеланиями — */
-.cake-stage {
-  perspective: 900px;
-  display: flex;
-  justify-content: center;
+/* ---- торт: цилиндр из панелей, который можно крутить ---- */
+.cake3d {
+  font-size: clamp(0.85px, 0.2vw, 1.3px);
+  width: 300em;
+  height: 250em;
+  margin: 0 auto;
+  perspective: 1000em;
+  cursor: grab;
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
 }
+.cake3d:active { cursor: grabbing; }
 
-.cake {
-  display: block;
-  width: clamp(150px, 38vw, 210px);
-  height: auto;
-  /* float двигает через translate, наклон — через transform: свойства не конфликтуют */
-  animation: floatY 4s ease-in-out infinite;
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+.cake-orbit {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  width: 0;
+  height: 0;
   transform-style: preserve-3d;
+  transform: rotateX(14deg);
 }
 
-@keyframes floatY {
-  0%, 100% { translate: 0 0; }
-  50%      { translate: 0 -12px; }
+.cake-orbit > * {
+  position: absolute;
+  left: 0;
+  top: 0;
 }
+
+/* бок торта */
+.c-panel {
+  width: 22em;
+  height: 76em;
+  background: linear-gradient(180deg, #8b5a35, #6d4227 55%, #55321d);
+}
+
+/* крем стекает сверху по каждой панели */
+.c-drip {
+  position: absolute;
+  left: -0.5em;
+  right: -0.5em;
+  top: -6em;
+  display: block;
+  border-radius: 0 0 6em 6em;
+  background: linear-gradient(180deg, #fffaf0, #f4e3c8);
+}
+
+.c-top {
+  width: 192em;
+  height: 192em;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 38% 32%, #fffdf6, #f6e6cb 62%, #e6d0ae);
+  box-shadow: inset 0 0 26em rgba(120, 80, 40, 0.22);
+}
+
+/* Тень живёт вне 3D-сцены: горизонтальную «тарелку» браузер путал с боками торта. */
+.cake-shadow {
+  position: absolute;
+  left: 50%;
+  top: 74%;
+  width: 250em;
+  height: 60em;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(42, 33, 64, 0.22), transparent);
+  filter: blur(4em);
+}
+
+.c-candle {
+  width: 6em;
+  height: 54em;
+  background: linear-gradient(180deg, #ff9dc4, var(--accent));
+}
+
+.c-flame {
+  width: 16em;
+  height: 24em;
+  border-radius: 50% 50% 46% 46% / 62% 62% 38% 38%;
+  background: radial-gradient(circle at 50% 68%, #fffbe0, #ffc23d 55%, rgba(255, 106, 0, 0.1));
+  box-shadow: 0 0 22em rgba(255, 176, 32, 0.75);
+  animation: flicker 1.5s ease-in-out infinite;
+}
+
 @keyframes flicker {
-  0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
-  30%      { transform: scale(0.92, 1.06) rotate(-3deg); opacity: 0.92; }
-  65%      { transform: scale(1.06, 0.95) rotate(3deg); opacity: 1; }
+  0%, 100% { scale: 1 1; opacity: 1; }
+  40%      { scale: 0.92 1.08; opacity: 0.9; }
+  70%      { scale: 1.06 0.95; opacity: 1; }
 }
+
+/* имя, выведенное «кремом» на боку */
+.c-letter span {
+  font-family: var(--script);
+  font-weight: 700;
+  font-size: 42em;
+  line-height: 1;
+  color: #fffaf0;
+  text-shadow: 0 2px 0 rgba(90, 55, 30, 0.5);
+  white-space: pre;
+}
+
+.cake-hint {
+  margin: 6px 0 0;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: opacity 0.4s ease;
+}
+.cake-hint.is-hidden { opacity: 0; }
 
 .letter-title {
   font-family: var(--display);
@@ -514,8 +656,6 @@ body::before {
   border-radius: 22px;
   border: 1px solid var(--line);
   background: var(--panel);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
   box-shadow: var(--shadow);
 }
 
@@ -621,11 +761,11 @@ body::before {
   height: 52px;
   border-radius: 50%;
   border: 1px solid var(--line);
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--panel);
   color: var(--text);
   font-size: 20px;
   cursor: pointer;
-  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 20px rgba(42, 33, 64, 0.12);
   display: none;
   place-items: center;
 }
@@ -665,7 +805,7 @@ body::before {
   padding: 13px 15px;
   border-radius: 14px;
   border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--panel);
   color: var(--text);
   font: inherit;
   font-size: 15px;
@@ -676,7 +816,7 @@ body::before {
   outline-offset: 1px;
 }
 .field .hint { margin-top: 7px; font-size: 12.5px; color: var(--muted); line-height: 1.5; text-transform: none; letter-spacing: 0; }
-.field select option { background: #14121a; color: #fff; }
+.field select option { background: #fff; color: var(--text); }
 .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 
 .btn-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
@@ -689,7 +829,7 @@ body::before {
   padding: 13px 15px;
   border-radius: 14px;
   border: 1px solid var(--line);
-  background: rgba(0, 0, 0, 0.35);
+  background: var(--panel);
   color: var(--text);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 13px;
@@ -704,8 +844,9 @@ body::before {
   z-index: 60;
   padding: 12px 20px;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.82);
-  border: 1px solid var(--line);
+  background: var(--text);
+  color: #fff;
+  border: 0;
   font-size: 14px;
   opacity: 0;
   pointer-events: none;
@@ -741,7 +882,7 @@ body::before {
 /* Низкие экраны в альбомной ориентации: убираем лишний вертикальный воздух. */
 @media (max-height: 520px) and (orientation: landscape) {
   .screen { padding-top: calc(64px + env(safe-area-inset-top)); gap: 10px; }
-    .cake { width: 120px; }
+    .cake3d { font-size: 0.72px; }
   .finale-emoji { font-size: 54px; }
 }
 

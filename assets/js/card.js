@@ -369,17 +369,123 @@
     showScreen('gift');
   });
 
-  /* ---------- лёгкий наклон торта за курсором ---------- */
-  const cake = $('cake');
-  if (cake && !reduced && matchMedia('(hover: hover)').matches) {
-    const stage = cake.parentElement;
-    stage.addEventListener('pointermove', (e) => {
-      const r = stage.getBoundingClientRect();
-      const dx = (e.clientX - r.left) / r.width - 0.5;
-      const dy = (e.clientY - r.top) / r.height - 0.5;
-      cake.style.transform = `rotateY(${dx * 22}deg) rotateX(${-dy * 16}deg)`;
+  /* ---------- торт: 3D-модель, которую можно крутить ---------- */
+  const NAME_ON_CAKE = (card.to || '').trim();
+
+  function buildCake() {
+    const orbit = $('cakeOrbit');
+    if (!orbit) return null;
+
+    const R = 96;      // радиус
+    const H = 76;      // высота бока
+    const N = 30;      // из скольких панелей собран цилиндр
+    const step = 360 / N;
+    const parts = [];
+
+    for (let i = 0; i < N; i++) {
+      const a = i * step;
+      const panel = document.createElement('div');
+      panel.className = 'c-panel';
+      panel.style.transform = `translate(-50%, -50%) rotateY(${a}deg) translateZ(${R}em)`;
+      /* лёгкая разница яркости по кругу даёт объём */
+      panel.style.filter = `brightness(${(0.84 + 0.16 * Math.cos((a - 25) * Math.PI / 180)).toFixed(3)})`;
+      const drip = document.createElement('span');
+      drip.className = 'c-drip';
+      drip.style.height = (20 + Math.round(Math.abs(Math.sin(i * 1.7)) * 16)) + 'em';
+      panel.appendChild(drip);
+      parts.push(panel);
+    }
+
+    /* Крышку торта приподнимаем над кромкой панелей: ровно в их плоскости
+       браузер не может решить, что рисовать первым, и прячет её за боками. */
+    const TOP_Y = H / 2 + 8;
+    const top = document.createElement('div');
+    top.className = 'c-top';
+    top.style.transform = `translate(-50%, -50%) rotateX(90deg) translateZ(${TOP_Y}em)`;
+    parts.push(top);
+
+    /* свеча — тоже цилиндр, иначе с боку она схлопнулась бы в линию */
+    const CR = 8, CH = 54, CN = 10;
+    for (let i = 0; i < CN; i++) {
+      const a = i * (360 / CN);
+      const seg = document.createElement('div');
+      seg.className = 'c-candle';
+      seg.style.transform =
+        `translate(-50%, -50%) translateY(${-TOP_Y - CH / 2}em) rotateY(${a}deg) translateZ(${CR}em)`;
+      parts.push(seg);
+    }
+
+    const flame = document.createElement('div');
+    flame.className = 'c-flame';
+    flame.style.transform = `translate(-50%, -50%) translateY(${-TOP_Y - CH - 11}em)`;
+    parts.push(flame);
+
+    /* имя по окружности: буквы стоят на боку торта */
+    const letters = [...NAME_ON_CAKE];
+    const spread = 15;
+    const start = -((letters.length - 1) / 2) * spread;
+    letters.forEach((ch, i) => {
+      /* Буква сидит во внешнем блоке: em внутри неё считались бы от её же кегля,
+         и translateZ уносил бы её на километры от торта. */
+      const el = document.createElement('div');
+      el.className = 'c-letter';
+      const glyph = document.createElement('span');
+      glyph.textContent = ch;
+      el.appendChild(glyph);
+      el.style.transform =
+        `translate(-50%, -50%) rotateY(${start + i * spread}deg) translateZ(${R + 1}em) translateY(6em)`;
+      parts.push(el);
     });
-    stage.addEventListener('pointerleave', () => { cake.style.transform = ''; });
+
+    orbit.append(...parts);
+    return orbit;
+  }
+
+  const orbit = buildCake();
+
+  if (orbit) {
+    let angle = -34;      // стартовый разворот: имя видно не целиком
+    let velocity = 0.05;  // сама медленно крутится, пока её не трогают
+    let dragging = false;
+    let lastX = 0;
+    let touched = false;
+
+    const apply = () => { orbit.style.transform = `rotateX(14deg) rotateY(${angle}deg)`; };
+    apply();
+
+    const spin = () => {
+      if (!dragging) {
+        angle += velocity;
+        if (Math.abs(velocity) > 0.05) velocity *= 0.95;
+        else velocity = velocity < 0 ? -0.05 : 0.05;
+        apply();
+      }
+      requestAnimationFrame(spin);
+    };
+    if (!reduced) requestAnimationFrame(spin);
+
+    const stage = $('cake3d');
+    stage.addEventListener('pointerdown', (e) => {
+      dragging = true;
+      lastX = e.clientX;
+      stage.setPointerCapture(e.pointerId);
+      if (!touched) { touched = true; $('cakeHint').classList.add('is-hidden'); }
+    });
+    stage.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      const dx = e.clientX - lastX;
+      lastX = e.clientX;
+      angle += dx * 0.45;
+      velocity = dx * 0.12;
+      apply();
+    });
+    const endDrag = (e) => {
+      if (!dragging) return;
+      dragging = false;
+      if (stage.hasPointerCapture(e.pointerId)) stage.releasePointerCapture(e.pointerId);
+    };
+    stage.addEventListener('pointerup', endDrag);
+    stage.addEventListener('pointercancel', endDrag);
   }
 
   goTo(0);
