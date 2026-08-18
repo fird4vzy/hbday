@@ -53,7 +53,7 @@ body::before {
   to   { transform: translate3d(3%, 2%, 0) scale(1.08); }
 }
 
-#confetti, #fireworks {
+#confetti {
   position: fixed;
   inset: 0;
   z-index: 1;
@@ -92,15 +92,6 @@ body::before {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-}
-
-.display-name {
-  font-family: var(--display);
-  font-weight: 700;
-  font-size: clamp(56px, 15vw, 128px);
-  line-height: 1;
-  margin: 0;
-  text-wrap: balance;
 }
 
 .script-name {
@@ -242,10 +233,7 @@ body::before {
   50%      { transform: translateY(-12px); }
 }
 
-/* ============ 2. заставка ============ */
-.screen-intro .display-name { margin: 6px 0 4px; }
-
-/* ============ 3. слайды ============ */
+/* ============ 2. слайды ============ */
 .screen-deck { justify-content: flex-start; padding-top: 76px; }
 
 .dots {
@@ -283,17 +271,18 @@ body::before {
   width: 100%;
   max-width: 700px;
   margin: auto;
-  display: grid;
 }
 
-.slide {
-  grid-area: 1 / 1;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(18px);
-  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s;
+.slide { display: none; }
+.slide.is-active {
+  display: block;
+  animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-.slide.is-active { opacity: 1; visibility: visible; transform: none; }
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: none; }
+}
 
 .nav-btn {
   position: fixed;
@@ -323,16 +312,8 @@ body::before {
   justify-content: center;
   gap: clamp(6px, 3vw, 26px);
 }
-.card-name-row .party { display: block; flex: 0 0 auto; }
+.card-name-row .party { font-size: clamp(30px, 8vw, 58px); line-height: 1; }
 .card-name-row .party.right { scale: -1 1; }
-.popper {
-  display: block;
-  width: clamp(44px, 11vw, 76px);
-  height: auto;
-  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.45));
-  animation: float 3.6s ease-in-out infinite;
-}
-.card-name-row .party.right .popper { animation-delay: -1.8s; }
 
 .card-glow {
   position: absolute;
@@ -353,20 +334,25 @@ body::before {
 .card-actions { margin-top: 30px; }
 
 /* — слайд 2: письмо с пожеланиями — */
-.cake {
-  display: block;
-  width: clamp(132px, 34vw, 180px);
-  height: auto;
-  margin: 0 auto;
-  overflow: visible;
-  filter: drop-shadow(0 14px 24px rgba(0, 0, 0, 0.5));
-  animation: float 4s ease-in-out infinite;
+.cake-stage {
+  perspective: 900px;
+  display: flex;
+  justify-content: center;
 }
 
-/* Огонёк свечи живёт своей жизнью — лёгкое дрожание вокруг фитиля. */
-.cake-flame {
-  transform-origin: 100px 32px;
-  animation: flicker 1.6s ease-in-out infinite;
+.cake {
+  display: block;
+  width: clamp(150px, 38vw, 210px);
+  height: auto;
+  /* float двигает через translate, наклон — через transform: свойства не конфликтуют */
+  animation: floatY 4s ease-in-out infinite;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-style: preserve-3d;
+}
+
+@keyframes floatY {
+  0%, 100% { translate: 0 0; }
+  50%      { translate: 0 -12px; }
 }
 @keyframes flicker {
   0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
@@ -493,9 +479,7 @@ body::before {
 .photo-dots button.is-active { background: var(--accent); width: 20px; border-radius: 4px; }
 
 /* — финальный слайд — */
-.finale-poppers { display: flex; justify-content: center; gap: clamp(10px, 4vw, 28px); }
-.finale-poppers .popper { width: clamp(56px, 15vw, 92px); }
-.finale-poppers .right { scale: -1 1; animation-delay: -1.2s; }
+.finale-emoji { font-size: clamp(64px, 16vw, 96px); animation: float 4s ease-in-out infinite; }
 .finale-title { font-family: var(--display); font-size: clamp(30px, 7vw, 48px); margin: 20px 0 0; }
 .finale-text { margin: 14px 0 30px; font-size: 17px; line-height: 1.6; color: var(--muted); }
 
@@ -630,8 +614,8 @@ body::before {
 @media (max-height: 520px) and (orientation: landscape) {
   .screen { padding-top: calc(64px + env(safe-area-inset-top)); gap: 10px; }
   .giftbox { width: min(280px, 46vw); }
-  .cake { width: 112px; }
-  .finale-poppers .popper { width: 56px; }
+  .cake { width: 120px; }
+  .finale-emoji { font-size: 54px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

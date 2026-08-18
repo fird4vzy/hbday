@@ -10,7 +10,6 @@
   document.title = card.to ? `С днём рождения, ${card.to}! 🎉` : 'С днём рождения!';
 
   $('giftTo').textContent = card.to || 'Тебе';
-  $('introName').textContent = card.to || '';
   $('cardName').textContent = card.to || '';
   $('cardDate').textContent = card.date || '';
   $('cardDate').hidden = !card.date;
@@ -103,42 +102,6 @@
     spawnBurst(e.clientX, e.clientY);
   });
 
-  /* ---------- фейерверк на заставке ---------- */
-  const fw = $('fireworks');
-  const fctx = fw.getContext('2d');
-  let sparks = [];
-  let fireworksOn = false;
-
-  function burst(x, y) {
-    const hue = CONFETTI_COLORS[(Math.random() * CONFETTI_COLORS.length) | 0];
-    const count = 34 + ((Math.random() * 16) | 0);
-    for (let i = 0; i < count; i++) {
-      const a = (Math.PI * 2 * i) / count;
-      const v = 70 + Math.random() * 130;
-      sparks.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 1, color: hue });
-    }
-  }
-
-  let lastBurst = 0;
-  function drawFireworks(dt, now) {
-    fctx.clearRect(0, 0, innerWidth, innerHeight);
-    if (now - lastBurst > 900) {
-      lastBurst = now;
-      burst(innerWidth * (0.2 + Math.random() * 0.6), innerHeight * (0.15 + Math.random() * 0.45));
-    }
-    sparks = sparks.filter((s) => s.life > 0);
-    sparks.forEach((s) => {
-      s.life -= dt * 0.6;
-      s.vy += 60 * dt;
-      s.x += s.vx * dt;
-      s.y += s.vy * dt;
-      fctx.globalAlpha = Math.max(s.life, 0);
-      fctx.fillStyle = s.color;
-      fctx.fillRect(s.x, s.y, 2.5, 2.5);
-    });
-    fctx.globalAlpha = 1;
-  }
-
   /* ---------- общий цикл анимации ---------- */
   let last = performance.now();
   function tick(now) {
@@ -162,14 +125,11 @@
     });
     cctx.globalAlpha = 1;
     if (tapBits.length) drawBurst(dt);
-
-    if (fireworksOn) drawFireworks(dt, now);
     requestAnimationFrame(tick);
   }
 
   function resizeAll() {
     sizeCanvas(confetti, cctx);
-    sizeCanvas(fw, fctx);
     resetConfetti();
   }
 
@@ -362,12 +322,10 @@
   }, { passive: true });
 
   /* ---------- переходы между экранами ---------- */
-  const screens = { gift: $('screenGift'), intro: $('screenIntro'), deck: $('screenDeck') };
+  const screens = { gift: $('screenGift'), deck: $('screenDeck') };
 
   function showScreen(name) {
     Object.entries(screens).forEach(([key, el]) => { el.hidden = key !== name; });
-    fireworksOn = name === 'intro' && !reduced;
-    if (!fireworksOn) { sparks = []; fctx.clearRect(0, 0, innerWidth, innerHeight); }
     $('backBtn').hidden = name === 'gift';
     scrollTo({ top: 0 });
   }
@@ -378,7 +336,7 @@
     opened = true;
     $('giftbox').classList.add('is-opening');
     startMusic();
-    setTimeout(() => showScreen('intro'), reduced ? 0 : 520);
+    setTimeout(() => { showScreen('deck'); goTo(0); }, reduced ? 0 : 520);
   }
 
   const box = $('giftbox');
@@ -387,15 +345,30 @@
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openGift(); }
   });
 
-  $('continueBtn').addEventListener('click', () => { showScreen('deck'); goTo(0); });
-
   $('backBtn').addEventListener('click', () => {
     opened = false;
     box.classList.remove('is-opening');
     showScreen('gift');
   });
 
-  $('replayBtn').addEventListener('click', () => { showScreen('intro'); goTo(0); });
+  $('replayBtn').addEventListener('click', () => {
+    opened = false;
+    box.classList.remove('is-opening');
+    showScreen('gift');
+  });
+
+  /* ---------- лёгкий наклон торта за курсором ---------- */
+  const cake = $('cake');
+  if (cake && !reduced && matchMedia('(hover: hover)').matches) {
+    const stage = cake.parentElement;
+    stage.addEventListener('pointermove', (e) => {
+      const r = stage.getBoundingClientRect();
+      const dx = (e.clientX - r.left) / r.width - 0.5;
+      const dy = (e.clientY - r.top) / r.height - 0.5;
+      cake.style.transform = `rotateY(${dx * 22}deg) rotateX(${-dy * 16}deg)`;
+    });
+    stage.addEventListener('pointerleave', () => { cake.style.transform = ''; });
+  }
 
   goTo(0);
   showScreen('gift');

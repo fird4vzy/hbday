@@ -10,7 +10,9 @@
 потому что id частично пересекаются (например, #message есть и там, и там).
 """
 
+import base64
 import json
+import mimetypes
 import pathlib
 import re
 
@@ -25,11 +27,21 @@ def body_of(html):
     return re.search(r'<body>(.*?)\n<script', html, re.S).group(1).strip()
 
 
+def inline_images(html):
+    """Картинки из assets/img превращаем в data:URI — иначе один файл перестаёт быть одним."""
+    def sub(m):
+        rel = m.group(1)
+        data = (ROOT / rel).read_bytes()
+        mime = mimetypes.guess_type(rel)[0] or 'application/octet-stream'
+        return 'src="data:%s;base64,%s"' % (mime, base64.b64encode(data).decode())
+    return re.sub(r'src="(assets/img/[^"]+)"', sub, html)
+
+
 def main():
     css = read('assets/css/style.css')
     shared = read('assets/js/shared.js')
 
-    card_view = body_of(read('index.html')).replace('href="create.html"', 'href="#make"')
+    card_view = inline_images(body_of(read('index.html'))).replace('href="create.html"', 'href="#make"')
     create_view = body_of(read('create.html'))
 
     views = {'card': card_view, 'create': create_view}
