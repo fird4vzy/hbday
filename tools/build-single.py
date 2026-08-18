@@ -27,18 +27,29 @@ def body_of(html):
     return re.search(r'<body>(.*?)\n<script', html, re.S).group(1).strip()
 
 
+def _data_uri(path, mime):
+    return 'data:%s;base64,%s' % (mime, base64.b64encode(path.read_bytes()).decode())
+
+
 def inline_images(html):
     """Картинки из assets/img превращаем в data:URI — иначе один файл перестаёт быть одним."""
     def sub(m):
         rel = m.group(1)
-        data = (ROOT / rel).read_bytes()
         mime = mimetypes.guess_type(rel)[0] or 'application/octet-stream'
-        return 'src="data:%s;base64,%s"' % (mime, base64.b64encode(data).decode())
+        return 'src="%s"' % _data_uri(ROOT / rel, mime)
     return re.sub(r'src="(assets/img/[^"]+)"', sub, html)
 
 
+def inline_fonts(css):
+    """То же со шрифтами: без них однофайловая версия осталась бы без начертаний."""
+    def sub(m):
+        name = m.group(1)
+        return 'url(%s)' % _data_uri(ROOT / 'assets' / 'fonts' / name, 'font/woff2')
+    return re.sub(r'url\(\.\./fonts/([^)]+)\)', sub, css)
+
+
 def main():
-    css = read('assets/css/style.css')
+    css = inline_fonts(read('assets/css/style.css'))
     shared = read('assets/js/shared.js')
 
     card_view = inline_images(body_of(read('index.html'))).replace('href="create.html"', 'href="#make"')
@@ -50,9 +61,6 @@ def main():
     content = f"""<title>Открытка Чарос</title>
 <meta name="description" content="Поздравительная открытка с подарком, тортом и списком пожеланий.">
 <meta name="theme-color" content="#17171d">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Playfair+Display:ital,wght@0,700;1,600&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 {css}
 </style>
