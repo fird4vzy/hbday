@@ -762,15 +762,54 @@ body::before {
   gap: clamp(0px, 1vw, 16px);
   margin-bottom: 4px;
 }
+/* Каждый персонаж — фигура с собственной тенью на «полу»: она остаётся на месте
+   и поджимается, когда он в прыжке. */
+.crew {
+  position: relative;
+  display: block;
+  line-height: 0;
+}
+
+.crew::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  width: 66%;
+  height: 14px;
+  translate: -50% 0;
+  border-radius: 50%;
+  background: rgba(42, 33, 64, 0.22);
+  filter: blur(5px);
+  animation: crew-shadow 1.7s ease-in-out infinite;
+}
+
 .finale-crew img {
   width: clamp(104px, 25vw, 186px);
   height: auto;
-  /* тела у моделей белые — тень отделяет их от кремового фона */
-  filter: drop-shadow(0 10px 18px rgba(42, 33, 64, 0.18));
-  animation: bob 4.4s ease-in-out infinite;
+  transform-origin: 50% 94%;
+  filter: drop-shadow(0 6px 10px rgba(42, 33, 64, 0.12));
+  animation: crew-dance 1.7s ease-in-out infinite;
 }
-.finale-crew img:nth-child(2) { animation-delay: -1.4s; }
-.finale-crew img:nth-child(3) { animation-delay: -2.8s; }
+
+/* лёгкий разнобой по фазе — получается «волна», а не строевой шаг */
+.finale-crew .crew:nth-child(2) img,
+.finale-crew .crew:nth-child(2)::after { animation-delay: -0.57s; }
+.finale-crew .crew:nth-child(3) img,
+.finale-crew .crew:nth-child(3)::after { animation-delay: -1.14s; }
+
+@keyframes crew-dance {
+  0%   { transform: translateY(0)     rotate(-6deg) scale(1.03, 0.97); }
+  22%  { transform: translateY(-15px) rotate(-2deg) scale(0.98, 1.03); }
+  50%  { transform: translateY(0)     rotate(6deg)  scale(1.03, 0.97); }
+  72%  { transform: translateY(-15px) rotate(2deg)  scale(0.98, 1.03); }
+  100% { transform: translateY(0)     rotate(-6deg) scale(1.03, 0.97); }
+}
+
+@keyframes crew-shadow {
+  0%, 50%, 100% { transform: scale(1);      opacity: 0.9; }
+  22%, 72%      { transform: scale(0.72);   opacity: 0.5; }
+}
 .finale-title { font-family: var(--display); font-size: clamp(30px, 7vw, 48px); margin: 20px 0 0; }
 .finale-text { margin: 14px 0 30px; font-size: 17px; line-height: 1.6; color: var(--muted); }
 
